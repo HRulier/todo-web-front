@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import importPlugin from 'eslint-plugin-import';
-// import jsxA11y from "eslint-plugin-jsx-a11y";
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 import prettierPlugin from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
 
@@ -68,34 +68,24 @@ const airbnbReactRules = {
   'react/jsx-uses-react': 'off',
 };
 
-const airbnbA11yRules = {
-  'jsx-a11y/alt-text': 'error',
-  'jsx-a11y/anchor-has-content': 'error',
-  'jsx-a11y/label-has-associated-control': 'warn',
-  'jsx-a11y/no-static-element-interactions': 'warn',
-};
-
 const airbnbImportRules = {
   'import/order': [
     'warn',
     {
       groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-      'newlines-between': 'always',
+      // 'newlines-between': 'always',
     },
   ],
   'import/first': 'error',
   'import/no-duplicates': 'error',
-  'import/extensions': [
-    'error',
-    'ignorePackages',
-    {
-      js: 'never',
-      jsx: 'never',
-      ts: 'never',
-      tsx: 'never',
-    },
-  ],
-  'import/no-unresolved': 'off', // TypeScript gère déjà cela
+  'import/no-unresolved': 'off',
+};
+
+const airbnbA11yRules = {
+  'jsx-a11y/alt-text': 'error',
+  'jsx-a11y/anchor-has-content': 'error',
+  'jsx-a11y/label-has-associated-control': 'warn',
+  'jsx-a11y/no-static-element-interactions': 'warn',
 };
 
 export default tseslint.config(
@@ -106,38 +96,48 @@ export default tseslint.config(
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
-      // parserOptions: {
-      //   project: './tsconfig.json',
-      //   ecmaFeatures: {
-      //     jsx: true,
-      //   },
-      // },
+      parser: tseslint.parser,
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+        // ecmaFeatures: {
+        // jsx: true,
+        // },
+      },
     },
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       react: reactPlugin,
       import: importPlugin,
-      // "jsx-a11y": jsxA11y,
+      'jsx-a11y': jsxA11y,
       prettier: prettierPlugin,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      'react-hooks/exhaustive-deps': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      '@typescript-eslint/no-explicit-any': 'off',
 
       // Airbnb rules
       ...airbnbStyleRules,
       ...airbnbES6Rules,
       ...airbnbBestPractices,
       ...airbnbReactRules,
-      ...airbnbA11yRules,
       ...airbnbImportRules,
+      ...airbnbA11yRules,
 
       // Prettier integration
       'prettier/prettier': 'error',
 
       // Turn off rules that conflict with Prettier
       ...prettierConfig.rules,
+    },
+    settings: {
+      'import/resolver': {
+        node: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        },
+      },
     },
   }
 );

@@ -1,0 +1,102 @@
+// Variables pour la cohérence du design
+$primary-color: #3498db;
+$error-color: #e74c3c;
+$border-radius: 4px;
+$transition-speed: 0.3s;
+$font-stack: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+// Container principal du composant
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  width: 100%;
+  font-family: $font-stack;
+}
+
+// Style du label
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+// Marqueur de champ obligatoire
+.requiredMark {
+  color: $error-color;
+  margin-left: 0.25rem;
+  font-weight: 700;
+}
+
+// Wrapper pour positionner l'input et l'icône
+.inputWrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+// Container pour l'icône
+.iconContainer {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+  z-index: 1;
+  pointer-events: none; // Pour que les clics passent à travers l'icône
+}
+
+// Style de l'input
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #cbd5e0;
+  border-radius: $border-radius;
+  font-size: 1rem;
+  transition: all $transition-speed ease;
+  outline: none;
+  background-color: #fff;
+  
+  &:focus {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+  }
+  
+  &:hover:not(.inputError) {
+    border-color: darken(#cbd5e0, 10%);
+  }
+  
+  // Ajustement du padding lorsqu'une icône est présente
+  &.withIcon {
+    padding-left: 2.5rem;
+  }
+}
+
+// Style de l'input en état d'erreur
+.inputError {
+  border-color: $error-color;
+  
+  &:focus {
+    box-shadow: 0 0 0 3px rgba($error-color, 0.2);
+  }
+}
+
+// Compteur de caractères
+.charCounter {
+  align-self: flex-end;
+  font-size: 0.75rem;
+  color: #718096;
+  margin-top: 0.25rem;
+}
+
+// Style du message d'erreur
+.errorMessage {
+  color: $error-color;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
