@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios, { type AxiosResponse } from 'axios';
 import Axios from '../axios';
 
 import type { IUser } from '~/types/users';
 
 const signIn = async (email: string, password: string): Promise<{ user: IUser; token: string }> => {
-  const response = await Axios.post(
+  const response = await axios.post(
     `${import.meta.env.VITE_API_URL}/auth/login`,
     {
       email,
@@ -18,6 +18,71 @@ const signIn = async (email: string, password: string): Promise<{ user: IUser; t
   );
 
   return response.data;
+};
+
+const signUp = async (
+  data: Partial<IUser> & { password: string }
+): Promise<{ user: IUser; token: string }> => {
+  const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, data, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  return response.data;
+};
+
+const forgotPassword = async (email: string): Promise<AxiosResponse<{ message: string }>> => {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_URL}/auth/forgot-password`,
+    {
+      email,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  return response;
+};
+
+const resendVerificationEmail = async (
+  email: string
+): Promise<AxiosResponse<{ message: string }>> => {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_URL}/auth/resend-verification-email`,
+    {
+      email,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  return response;
+};
+
+const resetPassword = async (
+  password: string,
+  token: string
+): Promise<AxiosResponse<{ message: string }>> => {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_URL}/auth/reset-password/${token}`,
+    {
+      password,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  return response;
 };
 
 const getUserProfile = async (): Promise<IUser | null> => {
@@ -53,7 +118,7 @@ const logout = async (): Promise<{ message: string } | null> => {
   const refreshToken = localStorage.getItem('refreshToken');
   if (!refreshToken) return null;
 
-  const response = await Axios.post(
+  const response = await axios.post(
     `${import.meta.env.VITE_API_URL}/auth/logout`,
     {
       refreshToken,
@@ -68,4 +133,13 @@ const logout = async (): Promise<{ message: string } | null> => {
   return response.data;
 };
 
-export { signIn, logout, getUserProfile, getNewAccessToken };
+export {
+  signIn,
+  signUp,
+  forgotPassword,
+  resetPassword,
+  logout,
+  getUserProfile,
+  getNewAccessToken,
+  resendVerificationEmail,
+};

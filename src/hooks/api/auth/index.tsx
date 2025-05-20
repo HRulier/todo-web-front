@@ -1,12 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { signIn, logout, getUserProfile } from '~/api/auth';
-
+import type { AxiosError } from 'axios';
 import type { IUser } from '~/types/users';
+import {
+  signIn,
+  signUp,
+  logout,
+  getUserProfile,
+  resetPassword,
+  resendVerificationEmail,
+  forgotPassword,
+} from '~/api/auth';
 
 const useSignIn = () =>
   useMutation<
     any,
-    unknown,
+    AxiosError,
     {
       email: string;
       password: string;
@@ -16,10 +24,30 @@ const useSignIn = () =>
     mutationFn: ({ email, password }) => signIn(email, password),
   });
 
+const useSignUp = () =>
+  useMutation<any, AxiosError, Partial<IUser> & { password: string }, unknown>({
+    mutationFn: data => signUp(data),
+  });
+
 const useUserProfile = () =>
   useQuery({
     queryKey: ['user-profile'],
     queryFn: async (): Promise<IUser | null> => getUserProfile(),
+  });
+
+const useResendValidationEmail = () =>
+  useMutation<any, unknown, string, unknown>({
+    mutationFn: email => resendVerificationEmail(email),
+  });
+
+const useResetPassword = () =>
+  useMutation<any, unknown, { password: string; token: string }, unknown>({
+    mutationFn: ({ password, token }) => resetPassword(password, token),
+  });
+
+const useForgotPassword = () =>
+  useMutation<any, unknown, string, unknown>({
+    mutationFn: email => forgotPassword(email),
   });
 
 const useLogout = () => {
@@ -35,4 +63,12 @@ const useLogout = () => {
   });
 };
 
-export { useSignIn, useLogout, useUserProfile, signIn };
+export {
+  useSignIn,
+  useSignUp,
+  useLogout,
+  useUserProfile,
+  useResetPassword,
+  useForgotPassword,
+  useResendValidationEmail,
+};

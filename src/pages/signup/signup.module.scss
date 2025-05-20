@@ -1,0 +1,52 @@
+@use '@styles/variables' as *;
+
+.signIn {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .container {
+    background-color: $background-secondary;
+    padding: $spacing-5;
+    border-radius: $border-radius;
+    max-width: 500px;
+    width: 100%;
+
+    form {
+      display: flex;
+      flex-direction: column;
+
+      a {
+        margin-bottom: $spacing-4;
+      }
+
+      button {
+        align-self: center;
+      }
+    }
+
+    .error {
+      margin-top: $spacing-4;
+      p {
+        font-size: $font-size-md;
+        color: $error-color;
+        text-align: center;
+      }
+    }
+
+    .success {
+      margin-top: $spacing-4;
+      p {
+        font-size: $font-size-md;
+        color: $success-color;
+        text-align: center;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

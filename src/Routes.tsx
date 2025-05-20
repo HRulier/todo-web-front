@@ -2,6 +2,11 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router';
 import { useUserProfile } from './hooks/api/auth';
 import SignIn from '~/pages/signin';
+import SignUp from '~/pages/signup';
+import ForgotPassword from '~/pages/forgot-password';
+import ResetPassword from '~/pages/reset-password';
+import Verified from '~/pages/verified';
+import VerificationExpired from '~/pages/verification-expired';
 import Home from '~/pages/home';
 import About from '~/pages/about';
 
@@ -40,6 +45,12 @@ const AppRoutes = () => {
       <Router>
         <Routes>
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/verified" element={<Verified />} />
+          <Route path="/verification-expired" element={<VerificationExpired />} />
           {user && (
             <>
               <Route path="/" element={<Home />} />

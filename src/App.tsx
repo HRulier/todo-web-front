@@ -1,7 +1,6 @@
 import { QueryClientProvider, QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Routes from './Routes';
-import './App.scss';
 
 const queryClient = new QueryClient({
   defaultOptions: {
