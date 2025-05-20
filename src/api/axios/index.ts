@@ -2,12 +2,17 @@ import axios, { AxiosError } from 'axios';
 
 import { getNewAccessToken } from '../auth';
 
+const AxiosWithInterceptors = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
+});
+
 const Axios = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
-Axios.interceptors.response.use(
+AxiosWithInterceptors.interceptors.response.use(
   function (response) {
     return response;
   },
@@ -38,4 +43,4 @@ Axios.interceptors.response.use(
   }
 );
 
-export default Axios;
+export { Axios, AxiosWithInterceptors };
