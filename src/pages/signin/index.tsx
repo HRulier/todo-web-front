@@ -9,6 +9,7 @@ import InputEmail from '~/components/fields/InputEmail';
 import InputPassword from '~/components/fields/InputPassword';
 import Button from '~/components/Button';
 import SendVerificationButton from '~/components/SendVerificationButton';
+import SigninWithGoogle from '~/components/SigninWithGoogle';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -66,6 +67,7 @@ const SignIn = () => {
             Envoyer
           </Button>
         </form>
+        <SigninWithGoogle href={`${import.meta.env.VITE_API_URL}/auth/google`} />
         {isError && (
           <div className={styles.error}>
             {statusError === 403 && (

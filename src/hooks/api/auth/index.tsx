@@ -29,10 +29,11 @@ const useSignUp = () =>
     mutationFn: data => signUp(data),
   });
 
-const useUserProfile = () =>
+const useUserProfile = (options?: { enabled: boolean }) =>
   useQuery({
     queryKey: ['user-profile'],
     queryFn: async (): Promise<IUser | null> => getUserProfile(),
+    enabled: options?.enabled || true,
   });
 
 const useResendValidationEmail = () =>

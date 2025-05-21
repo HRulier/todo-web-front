@@ -1,0 +1,92 @@
+@use 'sass:color';
+@use '../../styles/variables' as *;
+
+.googleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $text-light;
+  color: $text-tertiary;
+  border: 1px solid $text-tertiary;
+  border-radius: $border-radius;
+  font-family: $font-stack;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  padding: 0;
+  height: 40px;
+  width: 100%;
+  min-width: 240px;
+  max-width: 360px;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color $transition-speed,
+    box-shadow $transition-speed;
+  text-align: center;
+
+  &:hover {
+    background-color: $background-secondary;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: $text-tertiary;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba($primary-color, 0.3);
+    text-decoration: none;
+    color: $text-tertiary;
+  }
+
+  &:active {
+    background-color: $background-primary;
+    text-decoration: none;
+    color: $text-tertiary;
+  }
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.googleIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.buttonText {
+  margin-left: $spacing-6;
+  line-height: 1;
+  font-size: $font-size-md;
+}
+
+@media (prefers-color-scheme: dark) {
+  .googleButton {
+    background-color: $background-dark;
+    color: $text-light;
+    border-color: $text-secondary;
+
+    &:hover {
+      background-color: color.adjust($background-dark, $lightness: 5%);
+      color: $text-light;
+    }
+
+    &:active {
+      background-color: color.adjust($background-dark, $lightness: -5%);
+      color: $text-light;
+    }
+
+    &:focus {
+      color: $text-light;
+    }
+  }
+}
