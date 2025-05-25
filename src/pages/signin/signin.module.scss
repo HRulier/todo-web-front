@@ -14,28 +14,31 @@
     max-width: 360px;
     width: 100%;
 
+    hr {
+      margin: $spacing-5 0;
+      opacity: 0.3;
+    }
+
     form {
       display: flex;
       flex-direction: column;
-
-      a {
-        margin-bottom: $spacing-4;
-      }
-
-      button {
+      margin-bottom: $spacing-4;
+      > button {
         align-self: center;
+        width: 100%;
       }
     }
 
+    .containerLinks {
+      display: flex;
+      justify-content: space-between;
+    }
+
     .error {
-      margin-top: $spacing-4;
+      margin-bottom: $spacing-4;
       p {
         font-size: $font-size-md;
         color: $error-color;
-      }
-
-      button {
-        width: 100%;
       }
     }
   }

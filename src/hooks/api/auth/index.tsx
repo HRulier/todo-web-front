@@ -59,6 +59,7 @@ const useLogout = () => {
       console.log(data);
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
+      localStorage.removeItem('showPasswordModal');
       queryClient.setQueryData(['user-profile'], null);
     },
   });

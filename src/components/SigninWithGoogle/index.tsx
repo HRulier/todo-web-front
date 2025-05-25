@@ -5,11 +5,12 @@ import styles from './signin-with-google.module.scss';
 interface SigninWithGoogleProps {
   href: string;
   buttonText?: string;
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 const SigninWithGoogle: React.FC<SigninWithGoogleProps> = ({
   href,
-  buttonText = 'Sign in with Google',
+  buttonText = 'Connexion / Inscription avec Google',
 }) => (
   <a
     href={href}
