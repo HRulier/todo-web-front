@@ -13,6 +13,7 @@ interface InputEmailProps<TFieldValues extends FieldValues> {
   required?: boolean;
   autoComplete?: string;
   icon?: React.ReactNode;
+  isDisabled?: boolean;
 }
 
 const InputEmail = <TFieldValues extends FieldValues>({
@@ -22,6 +23,7 @@ const InputEmail = <TFieldValues extends FieldValues>({
   placeholder = 'Adresse email',
   required = false,
   autoComplete = 'email',
+  isDisabled = false,
   icon,
 }: InputEmailProps<TFieldValues>) => {
   const buildValidationRules = () => {
@@ -68,6 +70,7 @@ const InputEmail = <TFieldValues extends FieldValues>({
           type="email"
           placeholder={placeholder}
           autoComplete={autoComplete}
+          disabled={isDisabled}
           className={`
             ${styles.input} 
             ${fieldState.invalid ? styles.inputError : ''} 

@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router';
 import { useUserProfile } from './hooks/api/auth';
+import Layout from './components/Layout';
+import AuthGoogleSuccess from './pages/auth-google-succes';
 import SignIn from '~/pages/signin';
 import SignUp from '~/pages/signup';
 import ForgotPassword from '~/pages/forgot-password';
@@ -51,11 +53,20 @@ const AppRoutes = () => {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/verified" element={<Verified />} />
           <Route path="/verification-expired" element={<VerificationExpired />} />
+          <Route path="/auth-google-success" element={<AuthGoogleSuccess />} />
+
           {user && (
-            <>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-            </>
+            <Route
+              path="*"
+              element={
+                <Layout key="app">
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/about" element={<About />} />
+                  </Routes>
+                </Layout>
+              }
+            />
           )}
           <Route path="*" element={<Redirect />} />
         </Routes>

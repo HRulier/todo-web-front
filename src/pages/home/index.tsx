@@ -7,7 +7,7 @@ const Home = () => {
     <>
       <h1>Home</h1>
       <NavLink to="about">About</NavLink>
-      <button onClick={() => logout()}>Logout</button>
+      <button onClick={() => logout()}>Se déconnecter</button>
     </>
   );
 };

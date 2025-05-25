@@ -9,6 +9,7 @@ import InputEmail from '~/components/fields/InputEmail';
 import InputPassword from '~/components/fields/InputPassword';
 import Button from '~/components/Button';
 import SendVerificationButton from '~/components/SendVerificationButton';
+import SigninWithGoogle from '~/components/SigninWithGoogle';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -21,12 +22,16 @@ const SignIn = () => {
   });
 
   const email = watch('email');
-  const { data, mutate: signIn, isSuccess, isError, error, isPending } = useSignIn();
+  const { data: dataSignIn, mutate: signIn, isSuccess, isError, error } = useSignIn();
+
   const statusError = error?.status || null;
 
   const handleSignin = async (data: FieldValues) => {
     try {
-      await signIn(data as { email: string; password: string });
+      await signIn({
+        email,
+        password: data.password,
+      } as { email: string; password: string });
     } catch (err) {
       console.log(err);
     }
@@ -34,8 +39,8 @@ const SignIn = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      localStorage.setItem('token', data.token);
-      queryClient.setQueryData(['user-profile'], data.user);
+      localStorage.setItem('token', dataSignIn.token);
+      queryClient.setQueryData(['user-profile'], dataSignIn.user);
       navigate('/');
     }
   }, [isSuccess]);
@@ -43,7 +48,12 @@ const SignIn = () => {
   return (
     <div className={styles.signIn}>
       <div className={styles.container}>
-        <h2>Connexion</h2>
+        <h2>Bienvenue</h2>
+        <SigninWithGoogle
+          href={`${import.meta.env.VITE_API_URL}/auth/google`}
+          buttonText="Connexion / Inscription avec Google"
+        />
+        <hr />
         <form onSubmit={handleSubmit(data => handleSignin(data))}>
           <InputEmail
             name="email"
@@ -60,11 +70,7 @@ const SignIn = () => {
             placeholder="Entrez votre mot de passe"
             required
           />
-          <NavLink to="/signup">Créer un compte ?</NavLink>
-          <NavLink to="/forgot-password">Mot de passe oublié ?</NavLink>
-          <Button type="submit" isLoading={isPending}>
-            Envoyer
-          </Button>
+          <Button type="submit">Se connecter</Button>
         </form>
         {isError && (
           <div className={styles.error}>
@@ -80,6 +86,10 @@ const SignIn = () => {
             {statusError === 401 && <p>Email ou mot de passe incorrect.</p>}
           </div>
         )}
+        <div className={styles.containerLinks}>
+          <NavLink to="/signup">Créer un compte ?</NavLink>
+          <NavLink to="/forgot-password">Mot de passe oublié ?</NavLink>
+        </div>
       </div>
     </div>
   );
