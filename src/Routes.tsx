@@ -10,7 +10,7 @@ import ResetPassword from '~/pages/reset-password';
 import Verified from '~/pages/verified';
 import VerificationExpired from '~/pages/verification-expired';
 import Home from '~/pages/home';
-import About from '~/pages/about';
+import Profile from '~/pages/profile';
 
 const Redirect = () => {
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ const AppRoutes = () => {
                 <Layout key="app">
                   <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/about" element={<About />} />
+                    <Route path="/profile" element={<Profile />} />
                   </Routes>
                 </Layout>
               }

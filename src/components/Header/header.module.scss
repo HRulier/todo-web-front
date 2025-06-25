@@ -1,0 +1,11 @@
+@use '../../styles/variables.scss' as *;
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: $background-secondary;
+  height: 50px;
+  width: 100%;
+  padding: $spacing-4;
+}
