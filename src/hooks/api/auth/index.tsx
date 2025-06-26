@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import type { IUser } from '~/types/users';
+import type { IUser, UserProfile } from '~/types/users';
 import {
   signIn,
   signUp,
@@ -9,6 +9,7 @@ import {
   resetPassword,
   resendVerificationEmail,
   forgotPassword,
+  updateUserProfile,
 } from '~/api/auth';
 
 const useSignIn = () =>
@@ -34,6 +35,11 @@ const useUserProfile = (options?: { enabled: boolean }) =>
     queryKey: ['user-profile'],
     queryFn: async (): Promise<IUser | null> => getUserProfile(),
     enabled: options?.enabled || true,
+  });
+
+const useUpdateUserProfile = () =>
+  useMutation<any, AxiosError, UserProfile, unknown>({
+    mutationFn: data => updateUserProfile(data),
   });
 
 const useResendValidationEmail = () =>
@@ -69,6 +75,7 @@ export {
   useSignUp,
   useLogout,
   useUserProfile,
+  useUpdateUserProfile,
   useResetPassword,
   useForgotPassword,
   useResendValidationEmail,

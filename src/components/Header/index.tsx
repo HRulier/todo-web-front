@@ -4,7 +4,7 @@ import styles from './header.module.scss';
 
 const Header = () => (
   <div className={styles.header}>
-    <NavLink to="profile">
+    <NavLink to="/profile">
       <CgProfile size={24} />
     </NavLink>
   </div>

@@ -1,7 +1,7 @@
 import type { AxiosResponse } from 'axios';
 import { Axios, AxiosWithInterceptors } from '../axios';
 
-import type { IUser } from '~/types/users';
+import type { IUser, UserProfile } from '~/types/users';
 
 const signIn = async (email: string, password: string): Promise<{ user: IUser; token: string }> => {
   const response = await Axios.post(
@@ -98,6 +98,26 @@ const getUserProfile = async (): Promise<IUser | null> => {
   return response?.data.user || null;
 };
 
+const updateUserProfile = async (profile: UserProfile): Promise<IUser | null> => {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+
+  const response = await AxiosWithInterceptors.put(
+    `${import.meta.env.VITE_API_URL}/auth/profile`,
+    {
+      lastName: profile.lastName,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  return response?.data.user || null;
+};
+
 const getNewAccessToken = async (): Promise<string | null> => {
   //! We use axios and not the instance with the interceptor that we've created
   const response = await Axios.post(
@@ -129,6 +149,7 @@ export {
   resetPassword,
   logout,
   getUserProfile,
+  updateUserProfile,
   getNewAccessToken,
   resendVerificationEmail,
 };

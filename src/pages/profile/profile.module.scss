@@ -3,4 +3,8 @@
 
 .content {
   @include content;
+
+  form {
+    margin-bottom: $spacing-3;
+  }
 }
