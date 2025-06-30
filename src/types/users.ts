@@ -8,3 +8,8 @@ export interface IUser {
   email: string;
   profile: UserProfile;
 }
+
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+}

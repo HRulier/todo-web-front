@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import type { IUser, UserProfile } from '~/types/users';
+import type { ChangePasswordPayload, IUser, UserProfile } from '~/types/users';
 import {
   signIn,
   signUp,
@@ -10,6 +10,7 @@ import {
   resendVerificationEmail,
   forgotPassword,
   updateUserProfile,
+  changeUserPassword,
 } from '~/api/auth';
 
 const useSignIn = () =>
@@ -37,9 +38,21 @@ const useUserProfile = (options?: { enabled: boolean }) =>
     enabled: options?.enabled || true,
   });
 
-const useUpdateUserProfile = () =>
-  useMutation<any, AxiosError, UserProfile, unknown>({
+const useUpdateUserProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<any, AxiosError, UserProfile, unknown>({
     mutationFn: data => updateUserProfile(data),
+    onSuccess: async data => {
+      console.log(data);
+      queryClient.setQueryData(['user-profile'], data);
+    },
+  });
+};
+
+const useChangeUserPassword = () =>
+  useMutation<any, AxiosError, ChangePasswordPayload, unknown>({
+    mutationFn: data => changeUserPassword(data),
   });
 
 const useResendValidationEmail = () =>
@@ -76,6 +89,7 @@ export {
   useLogout,
   useUserProfile,
   useUpdateUserProfile,
+  useChangeUserPassword,
   useResetPassword,
   useForgotPassword,
   useResendValidationEmail,

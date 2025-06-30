@@ -80,7 +80,7 @@ const SignUp = () => {
             name="confirmPassword"
             control={control}
             label="Confirmation mot de passe"
-            placeholder="Confirmez le nouveau mot de passe"
+            placeholder="Confirmez le mot de passe"
             rules={{
               required: 'Ce champ est requis',
               validate: value => value === password || 'Les mots de passe doivent être identiques',

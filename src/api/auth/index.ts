@@ -1,7 +1,7 @@
 import type { AxiosResponse } from 'axios';
 import { Axios, AxiosWithInterceptors } from '../axios';
 
-import type { IUser, UserProfile } from '~/types/users';
+import type { ChangePasswordPayload, IUser, UserProfile } from '~/types/users';
 
 const signIn = async (email: string, password: string): Promise<{ user: IUser; token: string }> => {
   const response = await Axios.post(
@@ -104,9 +104,7 @@ const updateUserProfile = async (profile: UserProfile): Promise<IUser | null> =>
 
   const response = await AxiosWithInterceptors.put(
     `${import.meta.env.VITE_API_URL}/auth/profile`,
-    {
-      lastName: profile.lastName,
-    },
+    profile,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -116,6 +114,24 @@ const updateUserProfile = async (profile: UserProfile): Promise<IUser | null> =>
   );
 
   return response?.data.user || null;
+};
+
+const changeUserPassword = async (payload: ChangePasswordPayload): Promise<IUser | null> => {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+
+  const response = await AxiosWithInterceptors.post(
+    `${import.meta.env.VITE_API_URL}/auth/change-password`,
+    payload,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  return response?.data || null;
 };
 
 const getNewAccessToken = async (): Promise<string | null> => {
@@ -150,6 +166,7 @@ export {
   logout,
   getUserProfile,
   updateUserProfile,
+  changeUserPassword,
   getNewAccessToken,
   resendVerificationEmail,
 };
