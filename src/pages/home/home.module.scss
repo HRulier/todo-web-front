@@ -3,4 +3,44 @@
 
 .content {
   @include content;
+
+  .weekHeader {
+    display: flex;
+    justify-content: space-between;
+    margin: $spacing-3 0;
+
+    nav {
+      display: flex;
+      gap: $spacing-3;
+
+      h1 {
+        margin: 0;
+      }
+
+      button {
+        all: unset;
+        cursor: pointer;
+        font-size: $font-size-2xl;
+        color: $primary-color;
+      }
+    }
+  }
+
+  .days {
+    display: flex;
+    a {
+      display: inline-block;
+      width: 100%;
+      line-height: 60px;
+      text-align: center;
+      color: $text-secondary;
+      text-transform: capitalize;
+      font-weight: $font-weight-bold;
+      border-bottom: solid 1px $text-tertiary;
+      cursor: pointer;
+      &.selected {
+        color: $primary-color;
+      }
+    }
+  }
 }
