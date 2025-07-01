@@ -20,13 +20,11 @@ const Profile = () => {
     },
   });
   const { mutate: logout } = useLogout();
-  const { mutate: updateUserProfile, isPending, isError, error } = useUpdateUserProfile();
+  const { mutate: updateUserProfile, isPending } = useUpdateUserProfile();
 
   const handleUpdateProfile = (data: FieldValues) => {
     updateUserProfile(data as UserProfile);
   };
-
-  console.log(isError, error);
 
   return (
     <>

@@ -10,7 +10,10 @@ import type { ChangePasswordPayload } from '~/types/users';
 
 const ModalPassword: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
   const modalRef = useRef<ModalRefProps>(null);
-  const { mutate: changeUserPassword, isPending, isError } = useChangeUserPassword();
+  const { mutate: changeUserPassword, isPending, isError, error } = useChangeUserPassword();
+  const errorMessage = isError
+    ? (error as any)?.response?.data?.message || 'Un erreur est survenue'
+    : null;
 
   const { control, watch, reset, handleSubmit } = useForm({
     defaultValues: {
@@ -71,7 +74,11 @@ const ModalPassword: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
                 value === newPassword || 'Les nouveaux mots de passe doivent être identiques',
             }}
           />
-          {isError && <p>Erreur</p>}
+          {errorMessage && (
+            <div className={styles.error}>
+              <p>{errorMessage}</p>
+            </div>
+          )}
           <Button type="submit" isLoading={isPending}>
             Valider
           </Button>

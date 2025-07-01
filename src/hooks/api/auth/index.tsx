@@ -44,7 +44,6 @@ const useUpdateUserProfile = () => {
   return useMutation<any, AxiosError, UserProfile, unknown>({
     mutationFn: data => updateUserProfile(data),
     onSuccess: async data => {
-      console.log(data);
       queryClient.setQueryData(['user-profile'], data);
     },
   });
