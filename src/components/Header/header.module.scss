@@ -3,9 +3,30 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   background-color: $background-secondary;
   height: 50px;
   width: 100%;
   padding: $spacing-4;
+
+  h1 {
+    font-size: $font-size-xl;
+    color: $primary-color;
+    margin: 0;
+  }
+
+  .actions {
+    display: flex;
+
+    a,
+    button {
+      margin: $spacing-3;
+    }
+
+    button {
+      all: unset;
+      color: $primary-color;
+      cursor: pointer;
+    }
+  }
 }

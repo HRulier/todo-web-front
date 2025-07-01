@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
 import styles from './profile.module.scss';
-import { useUserProfile, useLogout, useUpdateUserProfile } from '~/hooks/api/auth';
+import { useUserProfile, useUpdateUserProfile } from '~/hooks/api/auth';
 import InputText from '~/components/fields/InputText';
 import type { UserProfile } from '~/types/users';
 import Button from '~/components/Button';
@@ -19,7 +19,6 @@ const Profile = () => {
       },
     },
   });
-  const { mutate: logout } = useLogout();
   const { mutate: updateUserProfile, isPending } = useUpdateUserProfile();
 
   const handleUpdateProfile = (data: FieldValues) => {
@@ -36,29 +35,32 @@ const Profile = () => {
             <b>Email:</b> {user?.email}
           </p>
           <form onSubmit={handleSubmit(data => handleUpdateProfile(data))}>
-            <InputText
-              name="profile.firstName"
-              control={control}
-              label="Prénom"
-              placeholder="Saisisser votre prénom"
-              required
-            />
-            <InputText
-              name="profile.lastName"
-              control={control}
-              label="Nom"
-              placeholder="Saisisser votre nom"
-              required
-            />
-            <Button type="submit" isLoading={isPending}>
-              Valider
-            </Button>
+            <div className={styles.fields}>
+              <InputText
+                name="profile.firstName"
+                control={control}
+                label="Prénom"
+                placeholder="Saisisser votre prénom"
+                required
+              />
+              <InputText
+                name="profile.lastName"
+                control={control}
+                label="Nom"
+                placeholder="Saisisser votre nom"
+                required
+              />
+            </div>
+            <div className={styles.buttons}>
+              <Button type="submit" isLoading={isPending}>
+                Valider
+              </Button>
+              <Button variant="outline" onClick={() => passwordModalRef.current?.open()}>
+                Changer de mot de passe
+              </Button>
+            </div>
           </form>
-          <Button onClick={() => passwordModalRef.current?.open()}>Changer de mot de passe</Button>
         </div>
-        <Button variant="outline" onClick={() => logout()}>
-          Se déconnecter
-        </Button>
       </div>
     </>
   );
