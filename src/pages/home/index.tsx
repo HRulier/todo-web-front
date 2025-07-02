@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import {
   addDays,
   addWeeks,
@@ -14,8 +14,11 @@ import { GrCaretPrevious, GrCaretNext } from 'react-icons/gr';
 import { useSearchParams } from 'react-router';
 import styles from './home.module.scss';
 import Button from '~/components/Button';
+import ModalAddTask from '~/components/ModalAddTask';
+import type { ModalRefProps } from '~/components/Modal';
 
 const Home = () => {
+  const modalAddTaskRef = useRef<ModalRefProps>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentDate = useMemo(() => {
@@ -60,31 +63,35 @@ const Home = () => {
   const isDateSelected = useCallback((date: Date) => isEqual(date, currentDate), [currentDate]);
 
   return (
-    <div className={styles.content}>
-      <div className={styles.weekHeader}>
-        <nav>
-          <button onClick={() => changeWeek('prev')}>
-            <GrCaretPrevious />
-          </button>
-          <h1>{weekMessage}</h1>
-          <button onClick={() => changeWeek('next')}>
-            <GrCaretNext />
-          </button>
-        </nav>
-        <Button>Ajouter une tâche</Button>
+    <>
+      <ModalAddTask ref={modalAddTaskRef} />
+      <div className={styles.content}>
+        <div className={styles.weekHeader}>
+          <nav>
+            <button onClick={() => changeWeek('prev')}>
+              <GrCaretPrevious />
+            </button>
+            <h1>{weekMessage}</h1>
+            <button onClick={() => changeWeek('next')}>
+              <GrCaretNext />
+            </button>
+          </nav>
+          <Button onClick={() => modalAddTaskRef.current?.open()}>Ajouter une tâche</Button>
+        </div>
+        <div className={styles.days}>
+          {daysOfWeek.map(day => (
+            <a
+              role="button"
+              key={day.toISOString()}
+              className={isDateSelected(day) ? styles.selected : ''}
+              onClick={() => selectDate(day)}
+            >
+              {format(day, 'EEE dd', { locale: fr })}
+            </a>
+          ))}
+        </div>
       </div>
-      <div className={styles.days}>
-        {daysOfWeek.map(day => (
-          <a
-            role="button"
-            className={isDateSelected(day) ? styles.selected : ''}
-            onClick={() => selectDate(day)}
-          >
-            {format(day, 'EEE dd', { locale: fr })}
-          </a>
-        ))}
-      </div>
-    </div>
+    </>
   );
 };
 

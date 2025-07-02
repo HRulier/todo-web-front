@@ -11,7 +11,6 @@ interface InputTextProps<TFieldValues extends FieldValues> {
   placeholder?: string;
   required?: boolean;
   rules?: RegisterOptions<TFieldValues, Path<TFieldValues>>;
-  error?: string;
   maxLength?: number;
   autoComplete?: string;
   icon?: React.ReactNode;
@@ -25,7 +24,6 @@ const InputText = <TFieldValues extends FieldValues>({
   placeholder = '',
   required = false,
   rules,
-  error,
   maxLength,
   autoComplete,
   icon,
@@ -83,8 +81,8 @@ const InputText = <TFieldValues extends FieldValues>({
         </div>
       )}
 
-      {(error || fieldState.error?.message) && (
-        <p className={styles.errorMessage}>{error || fieldState.error?.message}</p>
+      {fieldState.error?.message && (
+        <p className={styles.errorMessage}>{fieldState.error?.message}</p>
       )}
     </div>
   );
