@@ -5,16 +5,19 @@ import InputText from '../fields/InputText';
 import InputDate from '../fields/InputDate';
 import Button from '../Button';
 import styles from './modal-password.module.scss';
+import { useCreateTask } from '~/hooks/api/tasks';
 
 import Modal, { type ModalRefProps } from '~/components/Modal';
+import type { CreateTaskPayload } from '~/types/tasks';
 
 const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
   const modalRef = useRef<ModalRefProps>(null);
+  const { mutate: createTask } = useCreateTask();
 
   const { control, reset, handleSubmit } = useForm({
     defaultValues: {
       description: '',
-      startDate: '',
+      date: '',
     },
   });
 
@@ -31,8 +34,10 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
     []
   );
 
-  const handleChangePassword = async (data: FieldValues) => {
-    console.log(data);
+  const handleChangePassword = (data: FieldValues) => {
+    createTask({
+      ...data,
+    } as CreateTaskPayload);
   };
 
   return (
@@ -48,7 +53,7 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
             required
           />
           <InputDate
-            name="startDate"
+            name="date"
             control={control}
             label="Date de début"
             placeholder="Choisir une date de début"

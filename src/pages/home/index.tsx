@@ -13,6 +13,7 @@ import { fr } from 'date-fns/locale';
 import { GrCaretPrevious, GrCaretNext } from 'react-icons/gr';
 import { useSearchParams } from 'react-router';
 import styles from './home.module.scss';
+import { useGetTasks } from '~/hooks/api/tasks';
 import Button from '~/components/Button';
 import ModalAddTask from '~/components/ModalAddTask';
 import type { ModalRefProps } from '~/components/Modal';
@@ -28,6 +29,8 @@ const Home = () => {
     const parsedDate = parseISO(dateParam);
     return isValid(parsedDate) ? parsedDate : new Date();
   }, [searchParams]);
+
+  const { data: tasks } = useGetTasks();
 
   const changeWeek = (dir: 'prev' | 'next') => {
     const nextDate = addWeeks(currentDate, dir === 'prev' ? -1 : 1);
@@ -90,6 +93,7 @@ const Home = () => {
             </a>
           ))}
         </div>
+        <div className={styles.tasks}>{JSON.stringify(tasks)}</div>
       </div>
     </>
   );
