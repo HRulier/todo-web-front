@@ -16,7 +16,9 @@ import styles from './home.module.scss';
 import { useGetTasks } from '~/hooks/api/tasks';
 import Button from '~/components/Button';
 import ModalAddTask from '~/components/ModalAddTask';
+import Task from '~/components/Task';
 import type { ModalRefProps } from '~/components/Modal';
+import type { ITask } from '~/types/tasks';
 
 const Home = () => {
   const modalAddTaskRef = useRef<ModalRefProps>(null);
@@ -93,7 +95,16 @@ const Home = () => {
             </a>
           ))}
         </div>
-        <div className={styles.tasks}>{JSON.stringify(tasks)}</div>
+        <div className={styles.tasks}>
+          {tasks?.map((task: ITask) => (
+            <Task
+              key={task._id}
+              id={task._id}
+              description={task.description}
+              completed={task.completed}
+            />
+          ))}
+        </div>
       </div>
     </>
   );
