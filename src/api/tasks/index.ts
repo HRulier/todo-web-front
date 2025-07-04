@@ -1,13 +1,19 @@
 import { AxiosWithInterceptors } from '../axios';
-import type { ITask, CreateTaskPayload, UpdateTaskPayload } from '~/types/tasks';
+import type {
+  ITask,
+  QueryParamsGetTasks,
+  CreateTaskPayload,
+  UpdateTaskPayload,
+} from '~/types/tasks';
 
-const getTasks = async (): Promise<ITask[] | null> => {
+const getTasks = async (params: QueryParamsGetTasks): Promise<ITask[] | null> => {
   const token = localStorage.getItem('token');
   if (!token) return null;
   const response = await AxiosWithInterceptors.get(`${import.meta.env.VITE_API_URL}/tasks`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    params,
   });
 
   return response.data.tasks;

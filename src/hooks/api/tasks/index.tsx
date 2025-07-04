@@ -1,11 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createTask, getTasks, updateTask } from '~/api/tasks';
-import type { CreateTaskPayload, ITask, UpdateTaskPayload } from '~/types/tasks';
+import type {
+  ITask,
+  QueryParamsGetTasks,
+  CreateTaskPayload,
+  UpdateTaskPayload,
+} from '~/types/tasks';
 
-const useGetTasks = () =>
+const useGetTasks = (params: QueryParamsGetTasks) =>
   useQuery({
-    queryKey: ['tasks'],
-    queryFn: async (): Promise<ITask[] | null> => getTasks(),
+    queryKey: ['tasks', params],
+    queryFn: async (): Promise<ITask[] | null> => getTasks(params),
   });
 
 const useCreateTask = () => {

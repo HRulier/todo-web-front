@@ -10,6 +10,12 @@ export interface ITask {
   user: IUser;
 }
 
+export interface QueryParamsGetTasks {
+  completed?: boolean;
+  minDate?: string; // Format: YYYY-MM-DD
+  maxDate?: string; // Format: YYYY-MM-DD
+}
+
 export interface CreateTaskPayload {
   description: string;
   date: string;

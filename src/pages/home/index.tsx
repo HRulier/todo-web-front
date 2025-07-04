@@ -32,7 +32,15 @@ const Home = () => {
     return isValid(parsedDate) ? parsedDate : new Date();
   }, [searchParams]);
 
-  const { data: tasks } = useGetTasks();
+  const daysOfWeek = useMemo(() => {
+    const firstDayOfWeek = startOfWeek(currentDate, { weekStartsOn: 1 });
+    return new Array(7).fill(null).map((_, index: number) => addDays(firstDayOfWeek, index));
+  }, [currentDate]);
+
+  const { data: tasks } = useGetTasks({
+    minDate: format(daysOfWeek[0], 'yyyy-MM-dd'),
+    maxDate: format(daysOfWeek[daysOfWeek.length - 1], 'yyyy-MM-dd'),
+  });
 
   const changeWeek = (dir: 'prev' | 'next') => {
     const nextDate = addWeeks(currentDate, dir === 'prev' ? -1 : 1);
@@ -58,11 +66,6 @@ const Home = () => {
     }
 
     return str;
-  }, [currentDate]);
-
-  const daysOfWeek = useMemo(() => {
-    const firstDayOfWeek = startOfWeek(currentDate, { weekStartsOn: 1 });
-    return new Array(7).fill(null).map((_, index: number) => addDays(firstDayOfWeek, index));
   }, [currentDate]);
 
   const isDateSelected = useCallback((date: Date) => isEqual(date, currentDate), [currentDate]);
