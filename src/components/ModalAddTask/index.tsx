@@ -10,6 +10,11 @@ import { useCreateTask } from '~/hooks/api/tasks';
 import Modal, { type ModalRefProps } from '~/components/Modal';
 import type { CreateTaskPayload } from '~/types/tasks';
 
+export interface ModalAddTaskRefProps {
+  open: (date?: string) => void;
+  close: () => void;
+}
+
 const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
   const modalRef = useRef<ModalRefProps>(null);
   const { mutate: createTask } = useCreateTask();
@@ -24,7 +29,11 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
   useImperativeHandle(
     ref,
     () => ({
-      open: () => {
+      open: (date?: string) => {
+        reset({
+          description: '',
+          date,
+        });
         modalRef.current?.open();
       },
       close: () => {

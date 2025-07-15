@@ -49,7 +49,7 @@ const Task = ({ id, description, date, completed }: TaskProps) => {
         <Checkbox control={control} name={name} />
       </div>
       <div>
-        <h4>{description}</h4>
+        <p>{description}</p>
         {date && <p>{date}</p>}
       </div>
     </div>

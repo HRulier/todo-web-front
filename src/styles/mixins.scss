@@ -6,3 +6,10 @@
   max-width: 1200px;
   padding: $spacing-3;
 }
+
+@mixin content-large {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1800px;
+  padding: $spacing-3;
+}

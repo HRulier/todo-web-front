@@ -1,0 +1,43 @@
+@use '@styles/variables.scss' as *;
+
+.weekGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  overflow: hidden;
+
+  .dayColumn {
+    &:not(:first-child) {
+      border-left: solid 2px $background-secondary;
+    }
+    &:not(:last-child) {
+      border-right: solid 1px $background-primary;
+    }
+
+    h4 {
+      margin: 0;
+      padding: $spacing-2 $spacing-3;
+      text-transform: capitalize;
+    }
+
+    .tasksContainer {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-3;
+      background-color: $background-secondary;
+      padding: $spacing-3;
+      min-height: 500px;
+      button {
+        min-width: unset;
+        padding: $spacing-2;
+        border-color: $background-primary;
+        color: $text-secondary;
+        border-style: dashed;
+        &:hover {
+          background-color: transparent;
+          color: $primary-color;
+          border-color: $primary-color;
+        }
+      }
+    }
+  }
+}
