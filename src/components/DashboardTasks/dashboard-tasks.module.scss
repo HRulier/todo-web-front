@@ -38,6 +38,40 @@
           border-color: $primary-color;
         }
       }
+
+      .loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .dropIndicator {
+        height: 2px;
+        background-color: $primary-color;
+        margin: $spacing-1 $spacing-3;
+        border-radius: 9999px;
+        box-shadow: 0 0 4px rgba($primary-color, 0.5);
+        position: relative;
+
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          top: -3px;
+          width: 8px;
+          height: 8px;
+          background-color: $primary-color;
+          border-radius: 50%;
+        }
+
+        &::before {
+          left: -4px;
+        }
+
+        &::after {
+          right: -4px;
+        }
+      }
     }
   }
 }

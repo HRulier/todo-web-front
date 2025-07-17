@@ -16,7 +16,7 @@ import styles from './home.module.scss';
 import { useGetTasks } from '~/hooks/api/tasks';
 import Button from '~/components/Button';
 import ModalAddTask from '~/components/ModalAddTask';
-import Task from '~/components/Task';
+import Task from '~/components/DashboardTasks/Task';
 import type { ModalRefProps } from '~/components/Modal';
 import type { ITask } from '~/types/tasks';
 

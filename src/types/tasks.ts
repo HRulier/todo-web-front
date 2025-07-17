@@ -8,6 +8,7 @@ export interface ITask {
   createdAt?: Date;
   updatedAt?: Date;
   user: IUser;
+  position: number;
 }
 
 export interface QueryParamsGetTasks {
@@ -25,4 +26,5 @@ export interface UpdateTaskPayload {
   description?: string;
   date?: string;
   completed?: boolean;
+  position?: number;
 }
