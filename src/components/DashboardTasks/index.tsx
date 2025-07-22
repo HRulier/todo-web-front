@@ -242,6 +242,7 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
                         id={task._id}
                         description={task.description}
                         completed={task.completed}
+                        tags={task.tags}
                       />
                     </div>
                     <DropIndicator

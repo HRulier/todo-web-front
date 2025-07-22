@@ -1,4 +1,5 @@
 import type { IUser } from './users';
+import type { ITag } from './tags';
 
 export interface ITask {
   _id: string;
@@ -9,6 +10,7 @@ export interface ITask {
   updatedAt?: Date;
   user: IUser;
   position: number;
+  tags: ITag[];
 }
 
 export interface QueryParamsGetTasks {
