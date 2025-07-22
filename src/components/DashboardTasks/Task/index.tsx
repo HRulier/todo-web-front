@@ -9,12 +9,12 @@ interface TaskProps {
   id: string;
   description: string;
   completed: boolean;
-  date?: string;
+  dueDate?: string;
 }
 
 const debounceApiCall = 600;
 
-const Task = ({ id, description, date, completed }: TaskProps) => {
+const Task = ({ id, description, dueDate, completed }: TaskProps) => {
   const { mutate: updateTask } = useUpdateTask();
   const name = `${id}-completed`;
   const { control, watch, handleSubmit } = useForm({
@@ -50,7 +50,7 @@ const Task = ({ id, description, date, completed }: TaskProps) => {
       </div>
       <div>
         <p>{description}</p>
-        {date && <p>{date}</p>}
+        {dueDate && <p>{dueDate}</p>}
       </div>
     </div>
   );

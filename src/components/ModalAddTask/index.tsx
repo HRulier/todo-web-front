@@ -22,7 +22,7 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
   const { control, reset, handleSubmit } = useForm({
     defaultValues: {
       description: '',
-      date: '',
+      dueDate: '',
     },
   });
 
@@ -32,7 +32,7 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
       open: (date?: string) => {
         reset({
           description: '',
-          date,
+          dueDate: date,
         });
         modalRef.current?.open();
       },
@@ -62,7 +62,7 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
             required
           />
           <InputDate
-            name="date"
+            name="dueDate"
             control={control}
             label="Date de début"
             placeholder="Choisir une date de début"

@@ -3,7 +3,7 @@ import type { IUser } from './users';
 export interface ITask {
   _id: string;
   description: string;
-  date: string;
+  dueDate: string;
   completed: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -19,12 +19,12 @@ export interface QueryParamsGetTasks {
 
 export interface CreateTaskPayload {
   description: string;
-  date: string;
+  dueDate: string;
 }
 
 export interface UpdateTaskPayload {
   description?: string;
-  date?: string;
+  dueDate?: string;
   completed?: boolean;
   position?: number;
 }

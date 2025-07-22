@@ -51,14 +51,14 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
 
     tasks?.forEach((task: ITask) => {
       try {
-        const taskDate = new Date(task.date);
+        const taskDate = new Date(task.dueDate);
         const day = format(taskDate, 'eee', { locale: enUS });
 
         if (grouped[day]) {
           grouped[day].tasks.push(task);
         }
       } catch (error) {
-        console.warn('Invalid task date:', task.date, error);
+        console.warn('Invalid task dueDate:', task.dueDate, error);
       }
     });
 
@@ -173,7 +173,7 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
         id: draggedTask._id,
         task: {
           position: newPosition,
-          date: date.toISOString(),
+          dueDate: date.toISOString(),
           completed: draggedTask.completed,
         },
       });
