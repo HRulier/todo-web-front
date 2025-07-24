@@ -179,12 +179,18 @@ const Select = <TFieldValues extends FieldValues>({
   });
 
   // Handle container click
-  const handleContainerClick = useCallback(() => {
-    if (!disabled && inputRef.current) {
-      inputRef.current.focus();
-      openMenu();
-    }
-  }, [disabled, openMenu]);
+  const handleContainerClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (dropdownProps.onClick) {
+        dropdownProps.onClick(e);
+      }
+      if (!disabled && inputRef.current) {
+        inputRef.current.focus();
+        openMenu();
+      }
+    },
+    [disabled, openMenu]
+  );
 
   const handleRemoveItem = useCallback(
     (e: React.MouseEvent, item: OptionItem) => {
@@ -211,8 +217,8 @@ const Select = <TFieldValues extends FieldValues>({
         `}
         role="button"
         tabIndex={-1}
-        onClick={handleContainerClick}
         {...dropdownProps}
+        onClick={handleContainerClick} // override onClick from Downshift (call it from directly from handleContainerClick)
       >
         <div className={styles.selectedItems}>
           {selectedItems.map((selectedItem: OptionItem, index: number) => (
