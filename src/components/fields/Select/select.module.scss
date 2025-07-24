@@ -190,6 +190,13 @@
   font-weight: $font-weight-bold;
 }
 
+.noResults {
+  padding: 0.75rem 1rem;
+  color: #999;
+  text-align: center;
+  font-style: italic;
+}
+
 // Error message styling
 .errorMessage {
   color: $error-color;

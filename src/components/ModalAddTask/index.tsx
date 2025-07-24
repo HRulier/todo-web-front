@@ -11,7 +11,7 @@ import { useGetTags, useCreateTag } from '~/hooks/api/tags';
 
 import Modal, { type ModalRefProps } from '~/components/Modal';
 import type { CreateTaskPayload } from '~/types/tasks';
-import type { OptionItem } from '~/components/fields/Select';
+import type { OptionItem } from '~/components/fields/Select/';
 
 export interface ModalAddTaskRefProps {
   open: (date?: string) => void;
@@ -28,6 +28,7 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
     defaultValues: {
       description: '',
       dueDate: '',
+      tags: [],
     },
   });
 
@@ -48,9 +49,10 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
     []
   );
 
-  const handleChangePassword = (data: FieldValues) => {
+  const handleCreateTask = (data: FieldValues) => {
     createTask({
       ...data,
+      tags: (data.tags || []).map((tag: OptionItem) => tag.value),
     } as CreateTaskPayload);
   };
 
@@ -79,7 +81,7 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
     <Modal maxWidth={450} ref={modalRef} handleClose={() => reset()}>
       <div className={styles.content}>
         <h2>Créer une tâche</h2>
-        <form onSubmit={handleSubmit(data => handleChangePassword(data))}>
+        <form onSubmit={handleSubmit(data => handleCreateTask(data))}>
           <InputText
             name="description"
             control={control}
@@ -95,7 +97,15 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
             icon={<IoCalendarNumberOutline size={20} />}
             required
           />
-          <Select options={optionsTags || []} label="Options" createOption={createTagOption} />
+          <Select
+            name="tags"
+            control={control}
+            options={optionsTags || []}
+            label="Categories"
+            placeholder="Choissir un/des categories(s)"
+            createOption={createTagOption}
+            required
+          />
           <Button type="submit">Valider</Button>
         </form>
       </div>

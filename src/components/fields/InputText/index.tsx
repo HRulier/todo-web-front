@@ -82,7 +82,9 @@ const InputText = <TFieldValues extends FieldValues>({
       )}
 
       {fieldState.error?.message && (
-        <p className={styles.errorMessage}>{fieldState.error?.message}</p>
+        <p className={styles.errorMessage} role="alert">
+          {fieldState.error?.message}
+        </p>
       )}
     </div>
   );

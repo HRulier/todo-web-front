@@ -22,6 +22,7 @@ export interface QueryParamsGetTasks {
 export interface CreateTaskPayload {
   description: string;
   dueDate: string;
+  tags: string[];
 }
 
 export interface UpdateTaskPayload {

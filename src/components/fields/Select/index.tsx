@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useCombobox, useMultipleSelection } from 'downshift';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa6';
+import { useController } from 'react-hook-form';
+import type { Control, FieldValues, Path, RegisterOptions } from 'react-hook-form';
 import styles from './select.module.scss';
 
 export type OptionItem = {
@@ -11,40 +13,103 @@ export type OptionItem = {
   color?: string;
 };
 
-const Select = ({
-  label,
-  createPrefix = 'Créer :',
-  options: initialOptions,
-  createOption,
-}: {
-  label: string;
-  createPrefix?: string;
+interface SelectProps<TFieldValues extends FieldValues> {
+  name: Path<TFieldValues>;
+  control: Control<TFieldValues>;
+  label?: string;
   options: OptionItem[];
+  createPrefix?: string;
+  placeholder?: string;
+  required?: boolean;
+  rules?: RegisterOptions<TFieldValues, Path<TFieldValues>>;
   createOption?: (label: string) => Promise<OptionItem>;
-}) => {
+  disabled?: boolean;
+}
+
+const Select = <TFieldValues extends FieldValues>({
+  name,
+  control,
+  label,
+  options: initialOptions,
+  createPrefix = 'Créer :',
+  placeholder = 'Tapez pour rechercher ou créer...',
+  required = false,
+  rules,
+  createOption,
+  disabled = false,
+}: SelectProps<TFieldValues>) => {
+  // Validation rules handling
+  const validationRules = useMemo(() => {
+    if (rules && required) {
+      console.warn(
+        `Select: Les propriétés 'rules' et 'required' ne peuvent pas être utilisées simultanément pour le champ "${name}". La propriété 'required' sera ignorée.`
+      );
+    }
+    return rules || (required ? { required: 'Ce champ est requis' } : undefined);
+  }, [rules, required, name]);
+
+  const { field, fieldState } = useController({
+    name,
+    control,
+    rules: validationRules,
+  });
+
   const [options, setOptions] = useState(initialOptions);
   const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const {
-    getSelectedItemProps,
-    getDropdownProps,
-    removeSelectedItem,
-    selectedItems,
-    setSelectedItems,
-  } = useMultipleSelection<OptionItem>();
+  // Multiple selection setup
+  const { getSelectedItemProps, getDropdownProps, removeSelectedItem, selectedItems } =
+    useMultipleSelection<OptionItem>({
+      selectedItems: field.value || [],
+      onSelectedItemsChange: ({ selectedItems: newSelectedItems }) => {
+        field.onChange(newSelectedItems || []);
+      },
+    });
 
+  // Filter options based on input and selected items
   const filteredOptions = useMemo(() => {
-    let filtered = options
-      .filter(item => !selectedItems.some(selectedItem => selectedItem.value === item.value))
-      .filter(item => !inputValue || item.label.toLowerCase().includes(inputValue.toLowerCase()));
+    const normalizedInput = inputValue.toLowerCase().trim();
 
-    if (inputValue && filtered.length === 0) {
-      filtered = [{ value: `new-${uuid()}`, label: inputValue, isNew: true }];
+    let filtered = options.filter(item => {
+      const isSelected = selectedItems.some(selectedItem => selectedItem.value === item.value);
+      const matchesInput = !normalizedInput || item.label.toLowerCase().includes(normalizedInput);
+      return !isSelected && matchesInput;
+    });
+
+    // Add create option if no matches and input is not empty
+    if (normalizedInput && filtered.length === 0 && createOption) {
+      filtered = [{ value: `new-${uuid()}`, label: inputValue.trim(), isNew: true }];
     }
 
     return filtered;
-  }, [options, selectedItems, inputValue]);
+  }, [options, selectedItems, inputValue, createOption]);
 
+  // Handle item selection
+  const handleSelectedItemChange = useCallback(
+    async (selectedItem: OptionItem | null) => {
+      if (!selectedItem) return;
+
+      let itemToAdd = selectedItem;
+
+      if (selectedItem.isNew && createOption) {
+        try {
+          itemToAdd = await createOption(selectedItem.label);
+          setOptions(prev => [...prev, itemToAdd]);
+        } catch (error) {
+          console.error('Error creating new option:', error);
+          return;
+        }
+      }
+
+      const newSelectedItems = [...(field.value || []), itemToAdd];
+      field.onChange(newSelectedItems);
+      setInputValue('');
+    },
+    [field, createOption]
+  );
+
+  // Combobox setup
   const {
     isOpen,
     getToggleButtonProps,
@@ -56,118 +121,175 @@ const Select = ({
     openMenu,
   } = useCombobox({
     items: filteredOptions,
-    itemToString(item: OptionItem | null) {
-      return item ? item.label : '';
-    },
+    itemToString: (item: OptionItem | null) => item?.label || '',
     inputValue,
     selectedItem: null,
-    onInputValueChange: ({ inputValue }) => {
-      setInputValue(inputValue || '');
+    onInputValueChange: ({ inputValue: newValue }) => {
+      setInputValue(newValue || '');
     },
-    onSelectedItemChange: async ({ selectedItem }) => {
-      if (selectedItem) {
-        let newSelectItem = selectedItem;
-
-        if (selectedItem.isNew) {
-          newSelectItem = {
-            value: `option-${Date.now()}`,
-            label: inputValue,
-          };
-
-          if (createOption) {
-            newSelectItem = await createOption(inputValue);
-          }
-
-          setOptions(prev => [...prev, newSelectItem]);
-        }
-
-        setSelectedItems([...selectedItems, newSelectItem]);
-        setInputValue('');
-      }
+    onSelectedItemChange: ({ selectedItem }) => {
+      handleSelectedItemChange(selectedItem);
     },
     stateReducer: (state, actionAndChanges) => {
       const { type, changes } = actionAndChanges;
-      if (
-        type === useCombobox.stateChangeTypes.InputKeyDownEnter ||
-        type === useCombobox.stateChangeTypes.ItemClick
-      ) {
-        return {
-          ...changes,
-          isOpen: false,
-          highlightedIndex: state.highlightedIndex,
-          inputValue: '',
-        };
+
+      switch (type) {
+        case useCombobox.stateChangeTypes.InputKeyDownEnter:
+        case useCombobox.stateChangeTypes.ItemClick:
+          return {
+            ...changes,
+            isOpen: false,
+            highlightedIndex: state.highlightedIndex,
+            inputValue: '',
+          };
+        case useCombobox.stateChangeTypes.InputChange:
+          return {
+            ...changes,
+            isOpen: true,
+          };
+        default:
+          return changes;
       }
-      if (type === useCombobox.stateChangeTypes.InputChange) {
-        return {
-          ...changes,
-          isOpen: true,
-        };
-      }
-      return changes;
     },
   });
 
-  const inputProps = getInputProps({
-    ...getDropdownProps({ preventKeyAction: isOpen }),
+  // Merge refs from React Hook Form and Downshift
+  const mergeRefs = useCallback(
+    (...refs: any[]) =>
+      (element: any) => {
+        refs.forEach(ref => {
+          if (typeof ref === 'function') {
+            ref(element);
+          } else if (ref) {
+            ref.current = element;
+          }
+        });
+      },
+    []
+  );
+
+  // Get Downshift input props
+  const downshiftInputProps = getInputProps({
+    ref: mergeRefs(inputRef, field.ref), // Merge ref with React Hook Form ref
+    disabled,
   });
+
+  const dropdownProps = getDropdownProps({
+    preventKeyAction: isOpen,
+  });
+
+  // Handle container click
+  const handleContainerClick = useCallback(() => {
+    if (!disabled && inputRef.current) {
+      inputRef.current.focus();
+      openMenu();
+    }
+  }, [disabled, openMenu]);
+
+  const handleRemoveItem = useCallback(
+    (e: React.MouseEvent, item: OptionItem) => {
+      e.stopPropagation();
+      removeSelectedItem(item);
+    },
+    [removeSelectedItem]
+  );
 
   return (
     <div className={styles.container}>
-      <label className={styles.label} {...getLabelProps()}>
-        {label}
-      </label>
-      <div className={styles.inputWrapper} role="button" onClick={() => openMenu()}>
+      {label && (
+        <label className={styles.label} {...getLabelProps()}>
+          {label}
+          {required && !rules && <span className={styles.requiredMark}>*</span>}
+        </label>
+      )}
+
+      <div
+        className={`
+          ${styles.inputWrapper} 
+          ${fieldState.invalid ? styles.inputError : ''} 
+          ${disabled ? styles.disabled : ''}
+        `}
+        role="button"
+        tabIndex={-1}
+        onClick={handleContainerClick}
+        {...dropdownProps}
+      >
         <div className={styles.selectedItems}>
-          {selectedItems.map((selectedItem: OptionItem) => (
+          {selectedItems.map((selectedItem: OptionItem, index: number) => (
             <span
               key={selectedItem.value}
               className={styles.selectedItem}
               style={selectedItem.color ? { backgroundColor: selectedItem.color } : {}}
               {...getSelectedItemProps({
                 selectedItem,
-                index: selectedItems.indexOf(selectedItem),
+                index,
               })}
             >
               {selectedItem.label}
-              <button
-                type="button"
-                className={styles.removeButton}
-                onClick={e => {
-                  e.stopPropagation();
-                  removeSelectedItem(selectedItem);
-                }}
-                aria-label={`Remove ${selectedItem.label}`}
-              >
-                &#10005;
-              </button>
+              {!disabled && (
+                <button
+                  type="button"
+                  className={styles.removeButton}
+                  onClick={e => handleRemoveItem(e, selectedItem)}
+                  aria-label={`Remove ${selectedItem.label}`}
+                >
+                  &#10005;
+                </button>
+              )}
             </span>
           ))}
+
           <input
-            className={`${styles.inputSearch} ${selectedItems.length === 0 ? styles.placeholder : ''}`}
-            placeholder={selectedItems.length === 0 ? 'Tapez pour rechercher ou créer...' : ''}
-            {...inputProps}
+            {...downshiftInputProps}
+            className={`
+              ${styles.inputSearch} 
+              ${selectedItems.length === 0 ? styles.placeholder : ''}
+            `}
+            placeholder={selectedItems.length === 0 ? placeholder : ''}
             value={inputValue}
+            data-testid={`select-input-${name}`}
+            disabled={disabled}
           />
         </div>
-        <button type="button" className={styles.toggleButton} {...getToggleButtonProps()}>
+
+        <button
+          type="button"
+          className={styles.toggleButton}
+          {...getToggleButtonProps()}
+          disabled={disabled}
+        >
           <span className={styles.arrow}>{isOpen ? <FaChevronUp /> : <FaChevronDown />}</span>
         </button>
       </div>
+
       <ul className={`${styles.menu} ${!isOpen ? styles.hidden : ''}`} {...getMenuProps()}>
-        {isOpen &&
-          filteredOptions.map((item, index) => (
-            <li
-              className={`${styles.menuItem} ${highlightedIndex === index ? styles.highlighted : ''} ${item.isNew ? styles.createOption : ''}`}
-              key={item.value}
-              {...getItemProps({ item, index })}
-            >
-              <span style={item.color ? { backgroundColor: item.color } : {}}>
-                {item.isNew ? `${createPrefix}` : ''} {item.label}
-              </span>
-            </li>
-          ))}
+        {isOpen && filteredOptions.length > 0
+          ? filteredOptions.map((item, index) => (
+              <li
+                className={`
+                ${styles.menuItem} 
+                ${highlightedIndex === index ? styles.highlighted : ''} 
+                ${item.isNew ? styles.createOption : ''}
+              `}
+                key={item.value}
+                {...getItemProps({ item, index })}
+              >
+                <span style={item.color ? { backgroundColor: item.color } : {}}>
+                  {item.isNew ? `${createPrefix} ` : ''}
+                  {item.label}
+                </span>
+              </li>
+            ))
+          : isOpen &&
+            inputValue &&
+            !createOption && <li className={styles.noResults}>Aucun résultat trouvé</li>}
       </ul>
+
+      {fieldState.error?.message && (
+        <p className={styles.errorMessage} role="alert">
+          {fieldState.error.message}
+        </p>
+      )}
     </div>
   );
 };
