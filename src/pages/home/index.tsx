@@ -15,13 +15,13 @@ import { useSearchParams } from 'react-router';
 import styles from './home.module.scss';
 import { useGetTasks } from '~/hooks/api/tasks';
 import Button from '~/components/Button';
-import ModalAddTask from '~/components/ModalAddTask';
+import ModalEditTask from '~/components/ModalEditTask';
 import Task from '~/components/DashboardTasks/Task';
 import type { ModalRefProps } from '~/components/Modal';
 import type { ITask } from '~/types/tasks';
 
 const Home = () => {
-  const modalAddTaskRef = useRef<ModalRefProps>(null);
+  const modalEditTaskRef = useRef<ModalRefProps>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentDate = useMemo(() => {
@@ -72,7 +72,7 @@ const Home = () => {
 
   return (
     <>
-      <ModalAddTask ref={modalAddTaskRef} />
+      <ModalEditTask ref={modalEditTaskRef} />
       <div className={styles.content}>
         <div className={styles.weekHeader}>
           <nav>
@@ -84,7 +84,7 @@ const Home = () => {
               <GrCaretNext />
             </button>
           </nav>
-          <Button onClick={() => modalAddTaskRef.current?.open()}>Ajouter une tâche</Button>
+          <Button onClick={() => modalEditTaskRef.current?.open()}>Ajouter une tâche</Button>
         </div>
         <div className={styles.days}>
           {daysOfWeek.map(day => (
@@ -105,6 +105,8 @@ const Home = () => {
               id={task._id}
               description={task.description}
               completed={task.completed}
+              dueDate={task.dueDate}
+              tags={task.tags}
             />
           ))}
         </div>

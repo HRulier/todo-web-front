@@ -49,4 +49,20 @@ const updateTask = async (taskId: string, task: UpdateTaskPayload): Promise<ITas
   return response.data.task;
 };
 
-export { getTasks, createTask, updateTask };
+const deleteTask = async (taskId: string): Promise<{ message: string } | null> => {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+  const response = await AxiosWithInterceptors.delete(
+    `${import.meta.env.VITE_API_URL}/tasks/${taskId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  return response.data.message;
+};
+
+export { getTasks, createTask, updateTask, deleteTask };

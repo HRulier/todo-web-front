@@ -5,12 +5,12 @@ import { useSearchParams } from 'react-router';
 import styles from './dashboard.module.scss';
 import { useGetTasks } from '~/hooks/api/tasks';
 import Button from '~/components/Button';
-import ModalAddTask from '~/components/ModalAddTask';
+import ModalEditTask from '~/components/ModalEditTask';
 import type { ModalRefProps } from '~/components/Modal';
 import DashboardTasks from '~/components/DashboardTasks';
 
 const Dashboard = () => {
-  const modalAddTaskRef = useRef<ModalRefProps>(null);
+  const modalEditTaskRef = useRef<ModalRefProps>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentDate = useMemo(() => {
@@ -55,7 +55,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <ModalAddTask ref={modalAddTaskRef} />
+      <ModalEditTask ref={modalEditTaskRef} />
       <div className={styles.content}>
         <div className={styles.weekHeader}>
           <nav>
@@ -67,9 +67,9 @@ const Dashboard = () => {
               <GrCaretNext />
             </button>
           </nav>
-          <Button onClick={() => modalAddTaskRef.current?.open()}>Ajouter une tâche</Button>
+          <Button onClick={() => modalEditTaskRef.current?.open()}>Ajouter une tâche</Button>
         </div>
-        <div>
+        <div className={styles.tasks}>
           <DashboardTasks tasks={tasks || []} daysOfWeek={daysOfWeek} />
         </div>
       </div>

@@ -1,4 +1,10 @@
-import { useRef, forwardRef, useImperativeHandle, type ForwardRefRenderFunction } from 'react';
+import {
+  useState,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+  type ForwardRefRenderFunction,
+} from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
 import { IoCalendarNumberOutline } from 'react-icons/io5';
 import InputText from '../fields/InputText';
@@ -6,29 +12,35 @@ import InputDate from '../fields/InputDate';
 import Select from '../fields/Select';
 import Button from '../Button';
 import styles from './modal-password.module.scss';
-import { useCreateTask } from '~/hooks/api/tasks';
+import { useCreateTask, useUpdateTask, useDeleteTask } from '~/hooks/api/tasks';
 import { useGetTags, useCreateTag } from '~/hooks/api/tags';
 
 import Modal, { type ModalRefProps } from '~/components/Modal';
-import type { CreateTaskPayload } from '~/types/tasks';
+import type { ITask, CreateTaskPayload } from '~/types/tasks';
+import type { ITag } from '~/types/tags';
 import type { OptionItem } from '~/components/fields/Select/';
 
-export interface ModalAddTaskRefProps {
+export interface ModalEditTaskRefProps {
+  openTask: (task?: { _id: string; description: string; dueDate: string; tags: ITag[] }) => void;
   open: (date?: string) => void;
   close: () => void;
 }
 
-const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
+const ModalEditTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
+  const [taskId, setTaskId] = useState<string | null>(null);
   const modalRef = useRef<ModalRefProps>(null);
   const { mutate: createTask } = useCreateTask();
   const { mutateAsync: createTag } = useCreateTag();
+  const { mutate: updateTask } = useUpdateTask();
+  const { mutate: deleteTask } = useDeleteTask();
+
   const { data: tags } = useGetTags();
 
   const { control, reset, handleSubmit } = useForm({
     defaultValues: {
       description: '',
       dueDate: '',
-      tags: [],
+      tags: [] as OptionItem[],
     },
   });
 
@@ -40,6 +52,20 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
           description: '',
           dueDate: date,
         });
+        setTaskId(null);
+        modalRef.current?.open();
+      },
+      openTask: (task: ITask) => {
+        setTaskId(task._id);
+        reset({
+          description: task.description,
+          dueDate: task.dueDate,
+          tags: (task.tags || []).map(tag => ({
+            value: tag._id,
+            label: tag.label,
+            color: tag.color,
+          })),
+        });
         modalRef.current?.open();
       },
       close: () => {
@@ -49,11 +75,25 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
     []
   );
 
-  const handleCreateTask = (data: FieldValues) => {
-    createTask({
-      ...data,
-      tags: (data.tags || []).map((tag: OptionItem) => tag.value),
-    } as CreateTaskPayload);
+  const handleEditTask = (data: FieldValues) => {
+    if (taskId) {
+      updateTask({
+        _id: taskId,
+        task: {
+          description: data.description,
+          dueDate: data.dueDate,
+          tags: (data.tags || []).map((tag: OptionItem) => tag.value),
+        },
+      });
+    } else {
+      createTask({
+        ...data,
+        tags: (data.tags || []).map((tag: OptionItem) => tag.value),
+      } as CreateTaskPayload);
+    }
+
+    setTaskId(null);
+    modalRef.current?.close();
   };
 
   const optionsTags = tags?.map(tag => ({
@@ -80,8 +120,8 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
   return (
     <Modal maxWidth={450} ref={modalRef} handleClose={() => reset()}>
       <div className={styles.content}>
-        <h2>Créer une tâche</h2>
-        <form onSubmit={handleSubmit(data => handleCreateTask(data))}>
+        {taskId ? <h1>Modifier la tâche</h1> : <h1>Ajouter une tâche</h1>}
+        <form onSubmit={handleSubmit(data => handleEditTask(data))}>
           <InputText
             name="description"
             control={control}
@@ -102,15 +142,22 @@ const ModalAddTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
             control={control}
             options={optionsTags || []}
             label="Categories"
-            placeholder="Choissir un/des categories(s)"
+            placeholder="Choisir un/des categories(s)"
             createOption={createTagOption}
-            required
+            // required
           />
-          <Button type="submit">Valider</Button>
+          <div className={styles.actions}>
+            <Button type="submit">Valider</Button>
+            {taskId && (
+              <Button type="button" variant="outline" onClick={() => deleteTask(taskId)}>
+                Supprimer
+              </Button>
+            )}
+          </div>
         </form>
       </div>
     </Modal>
   );
 };
 
-export default forwardRef(ModalAddTask);
+export default forwardRef(ModalEditTask);

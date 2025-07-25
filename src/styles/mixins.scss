@@ -5,6 +5,9 @@
   margin: 0 auto;
   max-width: 1200px;
   padding: $spacing-3;
+  @media screen and (min-width: $breakpoint-lg) {
+    padding: $spacing-6;
+  }
 }
 
 @mixin content-large {
@@ -12,4 +15,7 @@
   margin: 0 auto;
   max-width: 1800px;
   padding: $spacing-3;
+  @media screen and (min-width: $breakpoint-lg) {
+    padding: $spacing-6;
+  }
 }

@@ -30,4 +30,5 @@ export interface UpdateTaskPayload {
   dueDate?: string;
   completed?: boolean;
   position?: number;
+  tags?: string[];
 }

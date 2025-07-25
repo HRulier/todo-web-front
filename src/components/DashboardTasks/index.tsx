@@ -9,8 +9,8 @@ import Task from '~/components/DashboardTasks/Task';
 import Button from '~/components/Button';
 import Loader from '~/components/Loader';
 import type { ITask } from '~/types/tasks';
-import ModalAddTask from '~/components/ModalAddTask';
-import type { ModalAddTaskRefProps } from '~/components/ModalAddTask';
+import ModalEditTask from '~/components/ModalEditTask';
+import type { ModalEditTaskRefProps } from '~/components/ModalEditTask';
 
 interface GroupedTasks {
   [key: string]: {
@@ -24,7 +24,7 @@ const DAYS_ORDER = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Date[] }) => {
   const { mutateAsync: updateTask } = useUpdateTask();
 
-  const modalAddTaskRef = useRef<ModalAddTaskRefProps>(null);
+  const modalEditTaskRef = useRef<ModalEditTaskRefProps>(null);
 
   const [draggedTask, setDraggedTask] = useState<ITask | null>(null);
   const [draggedFrom, setDraggedFrom] = useState<string | null>(null);
@@ -170,7 +170,7 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
 
     try {
       await updateTask({
-        id: draggedTask._id,
+        _id: draggedTask._id,
         task: {
           position: newPosition,
           dueDate: date.toISOString(),
@@ -184,7 +184,7 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
   };
 
   const handleAddTask = useCallback((date: string) => {
-    modalAddTaskRef.current?.open(date);
+    modalEditTaskRef.current?.open(date);
   }, []);
 
   const DropIndicator = ({ isLoading, isVisible }: { isLoading: boolean; isVisible: boolean }) => {
@@ -201,7 +201,7 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
 
   return (
     <>
-      <ModalAddTask ref={modalAddTaskRef} />
+      <ModalEditTask ref={modalEditTaskRef} />
       <div className={styles.weekGrid}>
         {DAYS_ORDER.map(day => (
           <div className={styles.dayColumn} key={day}>
@@ -239,10 +239,11 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
                     >
                       <Task
                         key={task._id}
-                        id={task._id}
+                        _id={task._id}
                         description={task.description}
                         completed={task.completed}
                         tags={task.tags}
+                        dueDate={task.dueDate}
                       />
                     </div>
                     <DropIndicator
@@ -251,19 +252,17 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
                     />
                   </React.Fragment>
                 ))}
-              {groupedTasks[day].tasks.length === 0 && (
-                <>
-                  <Button
-                    variant="outline"
-                    onClick={() => handleAddTask(groupedTasks[day].date.toISOString())}
-                  >
-                    <MdAdd size={25} />
-                  </Button>
-                  <DropIndicator
-                    isLoading={dropIndicator.loading}
-                    isVisible={dropIndicator.day === day}
-                  />
-                </>
+              <Button
+                variant="outline"
+                onClick={() => handleAddTask(groupedTasks[day].date.toISOString())}
+              >
+                <MdAdd size={25} />
+              </Button>
+              {groupedTasks[day].tasks?.length === 0 && (
+                <DropIndicator
+                  isLoading={dropIndicator.loading}
+                  isVisible={dropIndicator.day === day}
+                />
               )}
             </div>
           </div>

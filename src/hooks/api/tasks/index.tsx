@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createTask, getTasks, updateTask } from '~/api/tasks';
+import { createTask, deleteTask, getTasks, updateTask } from '~/api/tasks';
 import type {
   ITask,
   QueryParamsGetTasks,
@@ -26,12 +26,22 @@ const useCreateTask = () => {
 const useUpdateTask = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { id: string; task: UpdateTaskPayload }): Promise<ITask | null> =>
-      updateTask(data.id, data.task),
+    mutationFn: async (data: { _id: string; task: UpdateTaskPayload }): Promise<ITask | null> =>
+      updateTask(data._id, data.task),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
   });
 };
 
-export { useGetTasks, useCreateTask, useUpdateTask };
+const useDeleteTask = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (_id: string): Promise<{ message: string } | null> => deleteTask(_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    },
+  });
+};
+
+export { useGetTasks, useCreateTask, useUpdateTask, useDeleteTask };

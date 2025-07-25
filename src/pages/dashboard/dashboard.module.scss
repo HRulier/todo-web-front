@@ -3,11 +3,17 @@
 
 .content {
   @include content-large;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 100%;
 
   .weekHeader {
     display: flex;
     justify-content: space-between;
-    margin: $spacing-3 0;
+    margin-bottom: $spacing-5;
+    width: 100%;
 
     nav {
       display: flex;
@@ -24,5 +30,11 @@
         color: $primary-color;
       }
     }
+  }
+
+  .tasks {
+    flex: 1;
+    padding-bottom: $spacing-3;
+    width: 100%;
   }
 }
