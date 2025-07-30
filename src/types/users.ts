@@ -6,6 +6,7 @@ export type UserProfile = {
 export interface IUser {
   _id: string;
   email: string;
+  dailyEmailReminder: boolean;
   profile: UserProfile;
 }
 

@@ -5,6 +5,7 @@ import { useUserProfile, useUpdateUserProfile } from '~/hooks/api/auth';
 import InputText from '~/components/fields/InputText';
 import type { UserProfile } from '~/types/users';
 import Button from '~/components/Button';
+import Checkbox from '~/components/fields/Checkbox';
 import ModalPassword from '~/components/ModalPassword';
 import type { ModalRefProps } from '~/components/Modal';
 
@@ -17,6 +18,7 @@ const Profile = () => {
         firstName: user?.profile.firstName ?? '',
         lastName: user?.profile.lastName ?? '',
       },
+      dailyReminder: user?.dailyEmailReminder ?? false,
     },
   });
   const { mutate: updateUserProfile, isPending } = useUpdateUserProfile();
@@ -49,6 +51,11 @@ const Profile = () => {
                 label="Nom"
                 placeholder="Saisisser votre nom"
                 required
+              />
+              <Checkbox
+                name="dailyReminder"
+                control={control}
+                label="Recevoir un email quotidien avec mes tâches du jour"
               />
             </div>
             <div className={styles.buttons}>
