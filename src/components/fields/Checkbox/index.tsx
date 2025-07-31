@@ -60,7 +60,11 @@ const Checkbox = <TFieldValues extends FieldValues>({
         {/* Custom checkbox visual */}
         <div
           role="button"
-          onClick={() => field.onChange(!field.value)}
+          onClick={e => {
+            e.preventDefault();
+            e.stopPropagation();
+            field.onChange(!field.value);
+          }}
           className={`
             ${styles.checkboxCustom}
             ${field.value ? styles.checked : ''}

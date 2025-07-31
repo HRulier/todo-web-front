@@ -1,5 +1,13 @@
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+  createSearchParams,
+} from 'react-router';
 import { useUserProfile } from './hooks/api/auth';
 import Layout from './components/Layout';
 import AuthGoogleSuccess from './pages/auth-google-succes';
@@ -15,12 +23,20 @@ import Profile from '~/pages/profile';
 
 const Redirect = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { data: user } = useUserProfile();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!user && !token) {
-      navigate('/signin');
+      const url: any = {
+        pathname: '/signin',
+      };
+      if (/\?redirect/.test(location.search)) {
+        const pathname = location.pathname.replace('/', '');
+        url.search = createSearchParams({ redirect: pathname }).toString();
+      }
+      navigate(url);
     }
   }, [user]);
 
@@ -38,6 +54,21 @@ const Redirect = () => {
       <p>Loading...</p>
     </div>
   );
+};
+
+const CleanRedirectParams = ({ children }: { children: React.ReactNode }) => {
+  const [params, setParams] = useSearchParams();
+  const { data: user } = useUserProfile();
+
+  useEffect(() => {
+    if (user) {
+      const newParams = params;
+      newParams.delete('redirect');
+      setParams(newParams);
+    }
+  }, [user]);
+
+  return children;
 };
 
 const AppRoutes = () => {
@@ -60,13 +91,15 @@ const AppRoutes = () => {
             <Route
               path="*"
               element={
-                <Layout key="app">
-                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/profile" element={<Profile />} />
-                  </Routes>
-                </Layout>
+                <CleanRedirectParams key="app">
+                  <Layout>
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/home" element={<Home />} />
+                      <Route path="/profile" element={<Profile />} />
+                    </Routes>
+                  </Layout>
+                </CleanRedirectParams>
               }
             />
           )}

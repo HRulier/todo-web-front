@@ -6,6 +6,7 @@ const AuthGoogleSuccess = () => {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const token = params.get('token');
+  const redirectUrl = params.get('redirectUrl');
 
   useEffect(() => {
     if (token) {
@@ -23,7 +24,7 @@ const AuthGoogleSuccess = () => {
   });
 
   useEffect(() => {
-    if (user) navigate('/');
+    if (user) navigate(redirectUrl ? `/${redirectUrl}` : '/');
   }, [user]);
 
   return (

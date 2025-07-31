@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm, type FieldValues } from 'react-hook-form';
-import { useNavigate, NavLink } from 'react-router';
+import { useNavigate, NavLink, useSearchParams } from 'react-router';
 import { MdAlternateEmail } from 'react-icons/md';
 import styles from './signin.module.scss';
 import { useSignIn } from '~/hooks/api/auth';
@@ -13,6 +13,8 @@ import SigninWithGoogle from '~/components/SigninWithGoogle';
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const redirect = params.get('redirect');
   const queryClient = useQueryClient();
   const { control, handleSubmit, watch } = useForm({
     defaultValues: {
@@ -41,16 +43,22 @@ const SignIn = () => {
     if (isSuccess) {
       localStorage.setItem('token', dataSignIn.token);
       queryClient.setQueryData(['user-profile'], dataSignIn.user);
-      navigate('/');
+      navigate(redirect ? `/${redirect}` : '/');
     }
   }, [isSuccess]);
+
+  const signinWithGoogleUrl = useMemo(() => {
+    let url = `${import.meta.env.VITE_API_URL}/auth/google`;
+    if (redirect) url += `?redirectUrl=${redirect}`;
+    return url;
+  }, [redirect]);
 
   return (
     <div className={styles.signIn}>
       <div className={styles.container}>
         <h2>Bienvenue</h2>
         <SigninWithGoogle
-          href={`${import.meta.env.VITE_API_URL}/auth/google`}
+          href={signinWithGoogleUrl}
           buttonText="Connexion / Inscription avec Google"
         />
         <hr />
