@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useImperativeHandle, forwardRef } from 'react';
 import { createPortal } from 'react-dom';
+import { AnimatePresence, motion } from 'motion/react';
 import { IoClose } from 'react-icons/io5';
 import styles from './modal.module.scss';
 
@@ -54,17 +55,56 @@ const Modal = forwardRef<
   }, [isOpened]);
 
   return (
-    <>
+    <AnimatePresence>
       {modalRoot && isOpened && (
         <>
           {createPortal(
             <>
-              <div role="button" className={styles['overlay-modal']} onClick={closeModal} />
-              <div
+              <motion.div
+                role="button"
+                className={styles['overlay-modal']}
+                onClick={closeModal}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  duration: 0.2,
+                  ease: 'easeOut',
+                }}
+              />
+              <motion.div
                 className={styles.modal}
                 style={{ maxWidth: `${maxWidth}px` }}
                 role="dialog"
                 aria-modal="true"
+                initial={{
+                  opacity: 0,
+                  scale: 0.95,
+                  y: '-47%',
+                  x: '-50%',
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  y: '-50%',
+                  x: '-50%',
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.95,
+                  y: '-49%',
+                  x: '-50%',
+                }}
+                transition={{
+                  duration: 0.3,
+                  ease: [0.16, 1, 0.3, 1], // Custom spring-like ease
+                  opacity: { duration: 0.2 }, // Faster opacity
+                  scale: {
+                    type: 'spring',
+                    damping: 25,
+                    stiffness: 300,
+                  },
+                }}
               >
                 <button
                   className={styles.close}
@@ -76,13 +116,13 @@ const Modal = forwardRef<
                   <IoClose size={24} />
                 </button>
                 {children}
-              </div>
+              </motion.div>
             </>,
             modalRoot
           )}
         </>
       )}
-    </>
+    </AnimatePresence>
   );
 });
 
