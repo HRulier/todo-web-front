@@ -18,7 +18,7 @@ const Profile = () => {
         firstName: user?.profile.firstName ?? '',
         lastName: user?.profile.lastName ?? '',
       },
-      dailyReminder: user?.dailyEmailReminder ?? false,
+      dailyEmailReminder: user?.dailyEmailReminder ?? false,
     },
   });
   const { mutate: updateUserProfile, isPending } = useUpdateUserProfile();
@@ -53,7 +53,7 @@ const Profile = () => {
                 required
               />
               <Checkbox
-                name="dailyReminder"
+                name="dailyEmailReminder"
                 control={control}
                 label="Recevoir un email quotidien avec mes tâches du jour"
               />

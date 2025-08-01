@@ -10,7 +10,7 @@
   .dayColumn {
     display: flex;
     flex-direction: column;
-    min-width: 200px;
+    min-width: 230px;
 
     &:not(:first-child) {
       border-left: solid 2px $background-secondary;
