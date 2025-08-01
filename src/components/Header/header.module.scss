@@ -16,6 +16,11 @@
     font-size: $font-size-xl;
     color: $primary-color;
     margin: 0;
+    span {
+      @media screen and (max-width: $breakpoint-sm) {
+        display: none;
+      }
+    }
   }
 
   .actions {
@@ -23,11 +28,7 @@
 
     a {
       font-weight: $font-weight-bold;
-    }
-
-    a,
-    button {
-      margin: $spacing-3;
+      margin: $spacing-2;
     }
 
     button {

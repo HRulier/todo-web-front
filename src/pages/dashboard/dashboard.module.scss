@@ -17,6 +17,13 @@
     margin-bottom: $spacing-5;
     width: 100%;
 
+    > button {
+      display: none;
+      @media screen and (min-width: $breakpoint-sm) {
+        display: inline-block;
+      }
+    }
+
     nav {
       display: flex;
       gap: $spacing-3;

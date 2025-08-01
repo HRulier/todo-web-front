@@ -11,8 +11,20 @@
       margin-bottom: $spacing-6;
     }
     .buttons {
-      display: flex;
       gap: $spacing-4;
+
+      button {
+        width: 100%;
+        margin-bottom: $spacing-3;
+      }
+
+      @media screen and (min-width: $breakpoint-sm) {
+        display: flex;
+        button {
+          width: auto;
+          margin-bottom: 0;
+        }
+      }
     }
   }
 }

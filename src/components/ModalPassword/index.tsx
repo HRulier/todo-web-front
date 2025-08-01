@@ -47,7 +47,7 @@ const ModalPassword: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
   return (
     <Modal maxWidth={450} ref={modalRef} handleClose={() => reset()}>
       <div className={styles.content}>
-        <h2>Changer mon mot de passe.</h2>
+        <h2>Changer de mot de passe</h2>
         <form onSubmit={handleSubmit(data => handleChangePassword(data))}>
           <InputPassword
             name="currentPassword"

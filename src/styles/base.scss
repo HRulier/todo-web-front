@@ -23,14 +23,10 @@ body {
 }
 
 #root {
-  height: 100vh; /* Prend toute la hauteur de la viewport */
+  height: 100vh;
   display: flex;
   flex-direction: column;
   width: 100%;
-
-  @media (max-width: 768px) {
-    padding: 0 10px;
-  }
 }
 h1,
 h2,
@@ -48,38 +44,54 @@ blockquote {
 }
 
 h1 {
-  font-size: $font-size-4xl;
+  font-size: $font-size-3xl;
   font-weight: $font-weight-bold;
   margin-bottom: $spacing-6;
   color: $text-primary;
+
+  @media screen and (min-width: $breakpoint-sm) {
+    font-size: $font-size-4xl;
+  }
 }
 
 h2 {
-  font-size: $font-size-3xl;
+  font-size: $font-size-2xl;
   font-weight: $font-weight-semibold;
   margin-bottom: $spacing-5;
   color: $text-primary;
+  @media screen and (min-width: $breakpoint-sm) {
+    font-size: $font-size-3xl;
+  }
 }
 
 h3 {
-  font-size: $font-size-2xl;
+  font-size: $font-size-xl;
   font-weight: $font-weight-semibold;
   margin-bottom: $spacing-4;
   color: $text-primary;
+  @media screen and (min-width: $breakpoint-sm) {
+    font-size: $font-size-2xl;
+  }
 }
 
 h4 {
-  font-size: $font-size-xl;
+  font-size: $font-size-lg;
   font-weight: $font-weight-medium;
   margin-bottom: $spacing-4;
   color: $text-primary;
+  @media screen and (min-width: $breakpoint-sm) {
+    font-size: $font-size-xl;
+  }
 }
 
 h5 {
-  font-size: $font-size-lg;
+  font-size: $font-size-base;
   font-weight: $font-weight-medium;
   margin-bottom: $spacing-3;
   color: $text-primary;
+  @media screen and (min-width: $breakpoint-sm) {
+    font-size: $font-size-lg;
+  }
 }
 
 h6 {

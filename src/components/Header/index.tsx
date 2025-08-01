@@ -15,7 +15,7 @@ const Header = () => {
     <div className={styles.header}>
       <h1>
         <FaListUl />
-        Loopness - Todos
+        <span>Loopness - Todo</span>
       </h1>
       <div className={styles.actions}>
         <NavLink to={`/?date=${today}`}>Cette semaine</NavLink>

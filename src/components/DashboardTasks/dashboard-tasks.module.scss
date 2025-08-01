@@ -6,11 +6,17 @@
   overflow: hidden;
   height: 100%;
   overflow-x: auto;
+  scroll-snap-type: x mandatory;
 
   .dayColumn {
     display: flex;
     flex-direction: column;
-    min-width: 230px;
+    min-width: 280px;
+    scroll-snap-align: center;
+
+    @media screen and (min-width: $breakpoint-lg) {
+      min-width: 230px;
+    }
 
     &:not(:first-child) {
       border-left: solid 2px $background-secondary;

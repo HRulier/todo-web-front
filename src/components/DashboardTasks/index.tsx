@@ -202,7 +202,7 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
   return (
     <>
       <ModalEditTask ref={modalEditTaskRef} />
-      <div className={styles.weekGrid}>
+      <div className={styles.weekGrid} dir="ltr">
         {DAYS_ORDER.map(day => (
           <div className={styles.dayColumn} key={day}>
             <h4>

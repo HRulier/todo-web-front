@@ -24,18 +24,25 @@
   .close {
     all: unset;
     position: absolute;
-    top: 0;
-    right: 0;
-    background-color: $primary-color;
-    color: $background-secondary;
+    top: $spacing-1;
+    right: $spacing-1;
+    background-color: transparent;
+    color: $primary-color;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 36px;
     height: 36px;
     border-radius: 18px;
-    transform: translate(50%, -50%);
     cursor: pointer;
+
+    @media screen and (min-width: $breakpoint-sm) {
+      top: 0;
+      right: 0;
+      transform: translate(50%, -50%);
+      background-color: $primary-color;
+      color: $background-secondary;
+    }
   }
 
   p {
