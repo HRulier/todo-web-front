@@ -11,6 +11,7 @@ import {
   forgotPassword,
   updateUserProfile,
   changeUserPassword,
+  deleteUser,
 } from '~/api/auth';
 
 const useSignIn = () =>
@@ -73,8 +74,20 @@ const useLogout = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => logout(),
-    onSuccess: async data => {
-      console.log(data);
+    onSuccess: async () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      queryClient.setQueryData(['user-profile'], null);
+    },
+  });
+};
+
+const useDeleteUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ message: string } | null, AxiosError, void, unknown>({
+    mutationFn: () => deleteUser(),
+    onSuccess: async () => {
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
       queryClient.setQueryData(['user-profile'], null);
@@ -92,4 +105,5 @@ export {
   useResetPassword,
   useForgotPassword,
   useResendValidationEmail,
+  useDeleteUser,
 };

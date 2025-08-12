@@ -27,4 +27,18 @@
       }
     }
   }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    margin: $spacing-6 0;
+    color: $error-color;
+    cursor: pointer;
+
+    svg {
+      position: relative;
+      top: -1px;
+      margin-right: $spacing-1;
+    }
+  }
 }

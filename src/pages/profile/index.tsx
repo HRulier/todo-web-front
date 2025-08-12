@@ -1,15 +1,17 @@
-import { useRef } from 'react';
+import { useRef, useCallback } from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 import styles from './profile.module.scss';
-import { useUserProfile, useUpdateUserProfile } from '~/hooks/api/auth';
+import { useUserProfile, useUpdateUserProfile, useDeleteUser } from '~/hooks/api/auth';
 import InputText from '~/components/fields/InputText';
 import type { UserProfile } from '~/types/users';
 import Button from '~/components/Button';
 import Checkbox from '~/components/fields/Checkbox';
 import ModalPassword from '~/components/ModalPassword';
+import withModalConfirm from '~/components/withModalConfirm';
 import type { ModalRefProps } from '~/components/Modal';
 
-const Profile = () => {
+const Profile = ({ confirm }: { confirm: any }) => {
   const passwordModalRef = useRef<ModalRefProps>(null);
   const { data: user } = useUserProfile();
   const { control, handleSubmit } = useForm({
@@ -22,10 +24,23 @@ const Profile = () => {
     },
   });
   const { mutate: updateUserProfile, isPending } = useUpdateUserProfile();
+  const { mutateAsync: deleteUser } = useDeleteUser();
 
   const handleUpdateProfile = (data: FieldValues) => {
     updateUserProfile(data as UserProfile);
   };
+
+  const handleDeleteUser = useCallback(() => {
+    if (!user) return;
+    confirm('Êtes-vour certain de vouloir supprimer votre compte ?', async () => {
+      console.log('delete user');
+      try {
+        await deleteUser();
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  }, [user?._id]);
 
   return (
     <>
@@ -66,6 +81,10 @@ const Profile = () => {
                 Changer de mot de passe
               </Button>
             </div>
+            <a role="button" onClick={handleDeleteUser}>
+              <RiDeleteBin6Line />
+              Supprimer mon compte
+            </a>
           </form>
         </div>
       </div>
@@ -73,4 +92,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default withModalConfirm(Profile);

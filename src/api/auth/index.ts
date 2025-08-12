@@ -158,6 +158,14 @@ const logout = async (): Promise<{ message: string } | null> => {
   return response.data;
 };
 
+const deleteUser = async (): Promise<{ message: string } | null> => {
+  const response = await Axios.delete(`${import.meta.env.VITE_API_URL}/auth/account`, {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
 export {
   signIn,
   signUp,
@@ -169,4 +177,5 @@ export {
   changeUserPassword,
   getNewAccessToken,
   resendVerificationEmail,
+  deleteUser,
 };

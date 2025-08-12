@@ -16,10 +16,18 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
-  max-width: 310px;
+  max-width: 320px;
   padding: 20px;
   border-radius: 8px;
   background-color: $background-secondary;
+
+  p {
+    margin-top: 0;
+    padding-right: $spacing-3;
+    @media screen and (min-width: $breakpoint-sm) {
+      padding-right: 0;
+    }
+  }
 
   .close {
     all: unset;
@@ -45,7 +53,21 @@
     }
   }
 
-  p {
-    margin-top: 0;
+  .actions {
+    gap: $spacing-3;
+    button {
+      width: 100%;
+      margin-bottom: $spacing-3;
+    }
+
+    @media screen and (min-width: $breakpoint-sm) {
+      display: flex;
+
+      button {
+        width: 100%;
+        min-width: auto;
+        margin-bottom: 0;
+      }
+    }
   }
 }
