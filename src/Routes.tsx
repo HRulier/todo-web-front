@@ -17,7 +17,6 @@ import ForgotPassword from '~/pages/forgot-password';
 import ResetPassword from '~/pages/reset-password';
 import Verified from '~/pages/verified';
 import VerificationExpired from '~/pages/verification-expired';
-import Home from '~/pages/home';
 import Dashboard from '~/pages/dashboard';
 import Profile from '~/pages/profile';
 
@@ -95,7 +94,6 @@ const AppRoutes = () => {
                   <Layout>
                     <Routes>
                       <Route path="/" element={<Dashboard />} />
-                      <Route path="/home" element={<Home />} />
                       <Route path="/profile" element={<Profile />} />
                     </Routes>
                   </Layout>

@@ -12,4 +12,18 @@ export default defineConfig({
       '@styles': path.resolve(__dirname, './src/styles'),
     },
   },
+  build: {
+    outDir: 'dist',
+    sourcemap: false, // Plus léger en prod
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-core': ['react', 'react-dom', 'react-router'],
+          'vendor-query': ['@tanstack/react-query', '@tanstack/react-query-devtools'],
+          'vendor-ui': ['react-datepicker', 'react-icons', 'motion'],
+          'vendor-utils': ['axios', 'date-fns', 'react-hook-form', 'react-toastify'],
+        },
+      },
+    },
+  },
 });
