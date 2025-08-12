@@ -27,8 +27,8 @@ const Dashboard = () => {
   }, [currentDate]);
 
   const { data: tasks = [] } = useGetTasks({
-    minDate: format(daysOfWeek[0], 'yyyy-MM-dd'),
-    maxDate: format(daysOfWeek[daysOfWeek.length - 1], 'yyyy-MM-dd'),
+    minDate: daysOfWeek[0].toISOString(),
+    maxDate: daysOfWeek[daysOfWeek.length - 1].toISOString(),
   });
 
   const changeWeek = (dir: 'prev' | 'next') => {
