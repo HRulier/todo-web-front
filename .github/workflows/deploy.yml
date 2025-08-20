@@ -25,7 +25,7 @@ jobs:
           SSH_PORT: ${{ secrets.SSH_PORT }}
           APP_DIR: ${{ secrets.APP_DIR }}
         run: |
-          ssh -o StrictHostKeyChecking=no -p $SSH_PORT -i ~/.ssh/id_github_actions $SERVER_USER@$SERVER_IP "
+          ssh -o StrictHostKeyChecking=no -p $SSH_PORT -i ~/.ssh/id_rsa $SERVER_USER@$SERVER_IP "
           cd $APP_DIR &&
           git pull origin development &&
           cd .. &&
