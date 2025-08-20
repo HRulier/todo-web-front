@@ -29,5 +29,5 @@ jobs:
             cd $APP_DIR &&
             git pull origin development &&
             cd .. &&
-            docker-compose -f docker-compose-prod.yml up --build -d client
+            docker compose -f docker-compose-prod.yml up --build -d client
           "
