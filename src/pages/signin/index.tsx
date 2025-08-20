@@ -56,7 +56,7 @@ const SignIn = () => {
   return (
     <div className={styles.signIn}>
       <div className={styles.container}>
-        <h2>Bienvenue</h2>
+        <h2>Test</h2>
         <SigninWithGoogle
           href={signinWithGoogleUrl}
           buttonText="Connexion / Inscription avec Google"
