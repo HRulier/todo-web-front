@@ -1,0 +1,123 @@
+@use '@styles/variables' as *;
+
+.checkboxContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.checkboxWrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-3;
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    .checkboxCustom {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
+    }
+  }
+}
+
+.checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+
+  &:focus + .checkboxCustom {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+.checkboxCustom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid $text-tertiary;
+  border-radius: $border-radius;
+  background-color: $background-secondary;
+  transition: all $transition-speed ease;
+  position: relative;
+  flex-shrink: 0;
+
+  &.checked {
+    background-color: $primary-color;
+    border-color: $primary-color;
+    color: $text-light;
+  }
+
+  &.checkboxCustomError {
+    border-color: $error-color;
+
+    &.checked {
+      background-color: $error-color;
+      border-color: $error-color;
+    }
+  }
+}
+
+.checkmark {
+  font-size: 12px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s ease;
+
+  .checked & {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.label {
+  font-family: $font-stack;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  color: $text-primary;
+  cursor: pointer;
+  line-height: 1.4;
+  user-select: none;
+
+  &.labelError {
+    color: $error-color;
+  }
+}
+
+.requiredMark {
+  color: $error-color;
+  margin-left: $spacing-1;
+  font-weight: $font-weight-medium;
+}
+
+.errorMessage {
+  font-size: $font-size-sm;
+  color: $error-color;
+  margin: 0;
+  font-family: $font-stack;
+  font-weight: $font-weight-normal;
+}
+
+// Animation au survol
+.checkboxWrapper:hover {
+  .checkboxCustom:not(.checked) {
+    background-color: rgba($primary-color, 0.05);
+  }
+}
+
+// Animation de focus
+.checkbox:focus-visible + .checkboxCustom {
+  box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+}
+
+// Animation de l'état actif
+.checkboxWrapper:active {
+  .checkboxCustom {
+    transform: scale(0.95);
+  }
+}

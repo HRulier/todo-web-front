@@ -1,0 +1,6 @@
+@use '../../styles/variables.scss' as *;
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+}

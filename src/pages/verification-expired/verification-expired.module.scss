@@ -1,0 +1,39 @@
+@use '@styles/variables' as *;
+
+.verificationExpired {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .container {
+    background-color: $background-secondary;
+    padding: $spacing-5;
+    border-radius: $border-radius;
+    max-width: 360px;
+    width: 100%;
+    a {
+      margin-bottom: $spacing-4;
+    }
+
+    form {
+      margin-bottom: $spacing-4;
+
+      button {
+        width: 100%;
+      }
+    }
+
+    p {
+      &.success {
+        font-size: $font-size-md;
+        color: $success-color;
+      }
+      &.error {
+        font-size: $font-size-md;
+        color: $error-color;
+      }
+    }
+  }
+}

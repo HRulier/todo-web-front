@@ -1,0 +1,21 @@
+@use './variables.scss' as *;
+
+@mixin content {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: $spacing-3;
+  @media screen and (min-width: $breakpoint-lg) {
+    padding: $spacing-6;
+  }
+}
+
+@mixin content-large {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1800px;
+  padding: $spacing-3;
+  @media screen and (min-width: $breakpoint-lg) {
+    padding: $spacing-6;
+  }
+}

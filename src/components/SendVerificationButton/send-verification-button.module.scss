@@ -1,0 +1,15 @@
+@use '@styles/variables' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $spacing-2;
+}
+
+.validation {
+  color: $warning-color;
+  font-size: $font-size-sm;
+  margin: 0;
+  font-style: italic;
+}

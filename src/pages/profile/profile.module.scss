@@ -1,0 +1,44 @@
+@use '@styles/variables.scss' as *;
+@use '@styles/mixins.scss' as *;
+
+.content {
+  @include content;
+
+  form {
+    margin-bottom: $spacing-3;
+    max-width: 440px;
+    .fields {
+      margin-bottom: $spacing-6;
+    }
+    .buttons {
+      gap: $spacing-4;
+
+      button {
+        width: 100%;
+        margin-bottom: $spacing-3;
+      }
+
+      @media screen and (min-width: $breakpoint-sm) {
+        display: flex;
+        button {
+          width: auto;
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    margin: $spacing-6 0;
+    color: $error-color;
+    cursor: pointer;
+
+    svg {
+      position: relative;
+      top: -1px;
+      margin-right: $spacing-1;
+    }
+  }
+}

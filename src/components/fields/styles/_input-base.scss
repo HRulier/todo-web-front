@@ -1,0 +1,104 @@
+@use 'sass:color';
+@use '@styles/variables.scss' as *;
+
+// Variables pour la cohérence du designnpm r
+
+// Container principal du composant
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  width: 100%;
+  font-family: $font-stack;
+}
+
+// Style du label
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+// Marqueur de champ obligatoire
+.requiredMark {
+  color: $error-color;
+  margin-left: 0.25rem;
+  font-weight: 700;
+}
+
+// Wrapper pour positionner l'input et l'icône
+.inputWrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+// Container pour l'icône
+.iconContainer {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+  z-index: 1;
+  pointer-events: none; // Pour que les clics passent à travers l'icône
+}
+
+// Style de l'input
+.input {
+  width: 100%;
+  padding: $spacing-3 $spacing-4;
+  border: 1px solid #cbd5e0;
+  border-radius: $border-radius;
+  font-size: $font-size-base;
+  transition: all $transition-speed ease;
+  outline: none;
+  background-color: #fff;
+
+  &:focus {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+  }
+
+  &:hover:not(.inputError) {
+    border-color: color.adjust(#cbd5e0, $lightness: -10%);
+  }
+
+  // Ajustement du padding lorsqu'une icône est présente
+  &.withIcon {
+    padding-left: 2.5rem;
+  }
+}
+
+// Style de l'input en état d'erreur
+.inputError {
+  border-color: $error-color;
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba($error-color, 0.2);
+  }
+}
+
+// Compteur de caractères
+.charCounter {
+  align-self: flex-end;
+  font-size: $font-size-sm;
+  color: #718096;
+  margin-top: $spacing-2;
+}
+
+// Style du message d'erreur
+.errorMessage {
+  color: $error-color;
+  font-size: $font-size-sm;
+  margin-top: $spacing-2;
+  font-weight: $font-weight-medium;
+}

@@ -1,0 +1,40 @@
+@use '../../styles/variables.scss' as *;
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $background-secondary;
+  height: 50px;
+  width: 100%;
+  padding: $spacing-4;
+
+  h1 {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-size: $font-size-xl;
+    color: $primary-color;
+    margin: 0;
+    span {
+      @media screen and (max-width: $breakpoint-sm) {
+        display: none;
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+
+    a {
+      font-weight: $font-weight-bold;
+      margin: $spacing-2;
+    }
+
+    button {
+      all: unset;
+      color: $primary-color;
+      cursor: pointer;
+    }
+  }
+}

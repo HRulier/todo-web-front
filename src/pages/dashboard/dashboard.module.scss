@@ -1,0 +1,49 @@
+@use '@styles/mixins' as *;
+@use '@styles/variables' as *;
+
+.content {
+  @include content-large;
+  & {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100%;
+  }
+
+  .weekHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: $spacing-5;
+    width: 100%;
+
+    > button {
+      display: none;
+      @media screen and (min-width: $breakpoint-sm) {
+        display: inline-block;
+      }
+    }
+
+    nav {
+      display: flex;
+      gap: $spacing-3;
+
+      h1 {
+        margin: 0;
+      }
+
+      button {
+        all: unset;
+        cursor: pointer;
+        font-size: $font-size-2xl;
+        color: $primary-color;
+      }
+    }
+  }
+
+  .tasks {
+    flex: 1;
+    padding-bottom: $spacing-3;
+    width: 100%;
+  }
+}

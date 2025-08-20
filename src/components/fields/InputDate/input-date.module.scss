@@ -1,0 +1,133 @@
+@use 'sass:color';
+@use '../styles/input-base';
+@use '@styles/variables.scss' as *;
+
+.datePickerWrapper {
+  width: 100%;
+
+  .react-datepicker__input-container {
+    width: 100%;
+
+    input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
+
+.datePickerCalendar {
+  border: 1px solid $primary-color;
+  border-radius: $border-radius;
+  font-family: $font-stack;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  .react-datepicker__header {
+    background-color: $primary-color;
+    border-bottom: none;
+    border-radius: $border-radius $border-radius 0 0;
+
+    .react-datepicker__current-month {
+      color: $text-light;
+      font-weight: $font-weight-semibold;
+      font-size: $font-size-base;
+    }
+
+    .react-datepicker__day-names {
+      .react-datepicker__day-name {
+        color: $text-light;
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+
+  .react-datepicker__month-container {
+    .react-datepicker__day {
+      color: $text-primary;
+      border-radius: 50%;
+      transition: all $transition-speed ease;
+
+      &:hover {
+        background-color: color.adjust($primary-color, $lightness: 40%);
+        color: $primary-color;
+      }
+
+      &--selected {
+        background-color: $primary-color;
+        color: $text-light;
+        font-weight: $font-weight-medium;
+
+        &:hover {
+          background-color: color.adjust($primary-color, $lightness: -10%);
+        }
+      }
+
+      &--keyboard-selected {
+        background-color: color.adjust($primary-color, $lightness: 20%);
+        color: $text-light;
+      }
+
+      &--today {
+        background-color: $secondary-color;
+        color: $text-light;
+        font-weight: $font-weight-medium;
+
+        &:hover {
+          background-color: color.adjust($secondary-color, $lightness: -10%);
+        }
+      }
+
+      &--disabled {
+        color: $text-tertiary;
+        cursor: not-allowed;
+
+        &:hover {
+          background-color: transparent;
+        }
+      }
+
+      &--outside-month {
+        color: $text-tertiary;
+      }
+    }
+  }
+
+  .react-datepicker__navigation {
+    top: 12px;
+
+    &--previous {
+      left: 12px;
+    }
+
+    &--next {
+      right: 12px;
+    }
+
+    .react-datepicker__navigation-icon {
+      &::before {
+        border-color: $text-light;
+        border-width: 2px 2px 0 0;
+        width: 7px;
+        height: 7px;
+      }
+    }
+  }
+}
+
+// Style pour le bouton de clear du datepicker
+:global(.react-datepicker__close-icon) {
+  margin-right: $spacing-1;
+  &::after {
+    background-color: transparent;
+    color: $text-secondary;
+    font-size: $font-size-2xl;
+    height: 16px;
+    width: 16px;
+    line-height: 16px;
+  }
+}

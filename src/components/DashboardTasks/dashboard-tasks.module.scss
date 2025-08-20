@@ -1,0 +1,97 @@
+@use '@styles/variables.scss' as *;
+
+.weekGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  overflow: hidden;
+  height: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+
+  .dayColumn {
+    display: flex;
+    flex-direction: column;
+    min-width: 280px;
+    scroll-snap-align: center;
+
+    @media screen and (min-width: $breakpoint-lg) {
+      min-width: 230px;
+    }
+
+    &:not(:first-child) {
+      border-left: solid 2px $background-secondary;
+    }
+    &:not(:last-child) {
+      border-right: solid 1px $background-primary;
+    }
+
+    h4 {
+      margin: 0;
+      padding: $spacing-2 $spacing-3;
+      text-transform: capitalize;
+    }
+
+    &:first-child .tasksContainer {
+      border-radius: calc($border-radius + $spacing-2) 0 0 calc($border-radius + $spacing-2);
+    }
+
+    &:last-child .tasksContainer {
+      border-radius: 0 calc($border-radius + $spacing-2) calc($border-radius + $spacing-2) 0;
+    }
+
+    .tasksContainer {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-3;
+      background-color: $background-secondary;
+      padding: $spacing-3;
+      > button {
+        min-width: unset;
+        padding: $spacing-2;
+        border-color: $background-primary;
+        color: $text-secondary;
+        border-style: dashed;
+        &:hover {
+          background-color: transparent;
+          color: $primary-color;
+          border-color: $primary-color;
+        }
+      }
+
+      .loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .dropIndicator {
+        height: 2px;
+        background-color: $primary-color;
+        margin: $spacing-1 $spacing-3;
+        border-radius: 9999px;
+        box-shadow: 0 0 4px rgba($primary-color, 0.5);
+        position: relative;
+
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          top: -3px;
+          width: 8px;
+          height: 8px;
+          background-color: $primary-color;
+          border-radius: 50%;
+        }
+
+        &::before {
+          left: -4px;
+        }
+
+        &::after {
+          right: -4px;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,95 @@
+import { useRef, useCallback } from 'react';
+import { useForm, type FieldValues } from 'react-hook-form';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import styles from './profile.module.scss';
+import { useUserProfile, useUpdateUserProfile, useDeleteUser } from '~/hooks/api/auth';
+import InputText from '~/components/fields/InputText';
+import type { UserProfile } from '~/types/users';
+import Button from '~/components/Button';
+import Checkbox from '~/components/fields/Checkbox';
+import ModalPassword from '~/components/ModalPassword';
+import withModalConfirm from '~/components/withModalConfirm';
+import type { ModalRefProps } from '~/components/Modal';
+
+const Profile = ({ confirm }: { confirm: any }) => {
+  const passwordModalRef = useRef<ModalRefProps>(null);
+  const { data: user } = useUserProfile();
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      profile: {
+        firstName: user?.profile.firstName ?? '',
+        lastName: user?.profile.lastName ?? '',
+      },
+      dailyEmailReminder: user?.dailyEmailReminder ?? false,
+    },
+  });
+  const { mutate: updateUserProfile, isPending } = useUpdateUserProfile();
+  const { mutateAsync: deleteUser } = useDeleteUser();
+
+  const handleUpdateProfile = (data: FieldValues) => {
+    updateUserProfile(data as UserProfile);
+  };
+
+  const handleDeleteUser = useCallback(() => {
+    if (!user) return;
+    confirm('Êtes-vour certain de vouloir supprimer votre compte ?', async () => {
+      console.log('delete user');
+      try {
+        await deleteUser();
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  }, [user?._id]);
+
+  return (
+    <>
+      <ModalPassword ref={passwordModalRef} />
+      <div className={styles.content}>
+        <h1>Profile</h1>
+        <div>
+          <p>
+            <b>Email:</b> {user?.email}
+          </p>
+          <form onSubmit={handleSubmit(data => handleUpdateProfile(data))}>
+            <div className={styles.fields}>
+              <InputText
+                name="profile.firstName"
+                control={control}
+                label="Prénom"
+                placeholder="Saisisser votre prénom"
+                required
+              />
+              <InputText
+                name="profile.lastName"
+                control={control}
+                label="Nom"
+                placeholder="Saisisser votre nom"
+                required
+              />
+              <Checkbox
+                name="dailyEmailReminder"
+                control={control}
+                label="Recevoir un email quotidien avec mes tâches du jour"
+              />
+            </div>
+            <div className={styles.buttons}>
+              <Button type="submit" isLoading={isPending}>
+                Valider
+              </Button>
+              <Button variant="outline" onClick={() => passwordModalRef.current?.open()}>
+                Changer de mot de passe
+              </Button>
+            </div>
+            <a role="button" onClick={handleDeleteUser}>
+              <RiDeleteBin6Line />
+              Supprimer mon compte
+            </a>
+          </form>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default withModalConfirm(Profile);
