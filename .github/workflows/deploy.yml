@@ -3,7 +3,7 @@ name: Deploy Ubuntu Server Project
 on:
   push:
     branches:
-      - dev # Change to your dev branch
+      - development # Change to your dev branch
 
 jobs:
   deploy:
