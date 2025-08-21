@@ -159,9 +159,17 @@ const logout = async (): Promise<{ message: string } | null> => {
 };
 
 const deleteUser = async (): Promise<{ message: string } | null> => {
-  const response = await Axios.delete(`${import.meta.env.VITE_API_URL}/auth/account`, {
-    withCredentials: true,
-  });
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+  const response = await AxiosWithInterceptors.delete(
+    `${import.meta.env.VITE_API_URL}/auth/account`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
 
   return response.data;
 };

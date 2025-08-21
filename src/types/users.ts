@@ -8,6 +8,7 @@ export interface IUser {
   email: string;
   dailyEmailReminder: boolean;
   profile: UserProfile;
+  timezone: string;
 }
 
 export interface ChangePasswordPayload {

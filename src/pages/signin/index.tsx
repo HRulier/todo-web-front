@@ -49,7 +49,11 @@ const SignIn = () => {
 
   const signinWithGoogleUrl = useMemo(() => {
     let url = `${import.meta.env.VITE_API_URL}/auth/google`;
-    if (redirect) url += `?redirectUrl=${redirect}`;
+    const tzid = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const params = new URLSearchParams();
+    if (redirect) params.append('redirectUrl', redirect);
+    params.append('timezone', tzid);
+    url += `?${params.toString()}`;
     return url;
   }, [redirect]);
 
