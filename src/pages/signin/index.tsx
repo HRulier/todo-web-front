@@ -10,6 +10,7 @@ import InputPassword from '~/components/fields/InputPassword';
 import Button from '~/components/Button';
 import SendVerificationButton from '~/components/SendVerificationButton';
 import SigninWithGoogle from '~/components/SigninWithGoogle';
+import SigninWithSlack from '~/components/SigninWithSlack';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -57,14 +58,30 @@ const SignIn = () => {
     return url;
   }, [redirect]);
 
+  const signinWithSlackUrl = useMemo(() => {
+    let url = `${import.meta.env.VITE_API_URL}/auth/slack`;
+    const tzid = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const params = new URLSearchParams();
+    if (redirect) params.append('redirectUrl', redirect);
+    params.append('timezone', tzid);
+    url += `?${params.toString()}`;
+    return url;
+  }, [redirect]);
+
   return (
     <div className={styles.signIn}>
       <div className={styles.container}>
         <h2>Bienvenue</h2>
-        <SigninWithGoogle
-          href={signinWithGoogleUrl}
-          buttonText="Connexion / Inscription avec Google"
-        />
+        <div className={styles.signinWith}>
+          <SigninWithSlack
+            href={signinWithSlackUrl}
+            buttonText="Connexion / Inscription avec Slack"
+          />
+          <SigninWithGoogle
+            href={signinWithGoogleUrl}
+            buttonText="Connexion / Inscription avec Google"
+          />
+        </div>
         <hr />
         <form onSubmit={handleSubmit(data => handleSignin(data))}>
           <InputEmail
