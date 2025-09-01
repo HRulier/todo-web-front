@@ -10,7 +10,7 @@ import {
 } from 'react-router';
 import { useUserProfile } from './hooks/api/auth';
 import Layout from './components/Layout';
-import AuthGoogleSuccess from './pages/auth-google-succes';
+import AuthSuccess from './pages/auth-success';
 import SignIn from '~/pages/signin';
 import SignUp from '~/pages/signup';
 import ForgotPassword from '~/pages/forgot-password';
@@ -84,7 +84,7 @@ const AppRoutes = () => {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/verified" element={<Verified />} />
           <Route path="/verification-expired" element={<VerificationExpired />} />
-          <Route path="/auth-google-success" element={<AuthGoogleSuccess />} />
+          <Route path="/auth-success" element={<AuthSuccess />} />
 
           {user && (
             <Route
