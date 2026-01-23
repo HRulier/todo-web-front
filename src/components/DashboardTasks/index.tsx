@@ -288,6 +288,7 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
                         key={task._id}
                         _id={task._id}
                         description={task.description}
+                        priority={task.priority}
                         completed={task.completed}
                         tags={task.tags}
                         dueDate={task.dueDate}

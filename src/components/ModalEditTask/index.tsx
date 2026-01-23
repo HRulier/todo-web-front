@@ -9,6 +9,7 @@ import { useForm, type FieldValues } from 'react-hook-form';
 import { IoCalendarNumberOutline } from 'react-icons/io5';
 import InputText from '../fields/InputText';
 import InputDate from '../fields/InputDate';
+import MultipleSelect from '../fields/MultipleSelect';
 import Select from '../fields/Select';
 import Button from '../Button';
 import styles from './modal-password.module.scss';
@@ -18,13 +19,25 @@ import { useGetTags, useCreateTag } from '~/hooks/api/tags';
 import Modal, { type ModalRefProps } from '~/components/Modal';
 import type { ITask, CreateTaskPayload } from '~/types/tasks';
 import type { ITag } from '~/types/tags';
-import type { OptionItem } from '~/components/fields/Select/';
+import type { OptionItem } from '~/components/fields/MultipleSelect';
 
 export interface ModalEditTaskRefProps {
-  openTask: (task?: { _id: string; description: string; dueDate: string; tags: ITag[] }) => void;
+  openTask: (task?: {
+    _id: string;
+    description: string;
+    dueDate: string;
+    priority: string | null;
+    tags: ITag[];
+  }) => void;
   open: (date?: string) => void;
   close: () => void;
 }
+
+const priorityOptions: OptionItem[] = [
+  { value: 'low', label: 'Basse' },
+  { value: 'medium', label: 'Moyenne' },
+  { value: 'high', label: 'Haute' },
+];
 
 const ModalEditTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
   const [taskId, setTaskId] = useState<string | null>(null);
@@ -41,6 +54,7 @@ const ModalEditTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
       description: '',
       dueDate: '',
       tags: [] as OptionItem[],
+      priority: null as string | null,
     },
   });
 
@@ -50,6 +64,7 @@ const ModalEditTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
       open: (date?: string) => {
         reset({
           description: '',
+          priority: null,
           dueDate: date,
         });
         setTaskId(null);
@@ -60,6 +75,7 @@ const ModalEditTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
         reset({
           description: task.description,
           dueDate: task.dueDate,
+          priority: task.priority,
           tags: (task.tags || []).map(tag => ({
             value: tag._id,
             label: tag.label,
@@ -82,6 +98,7 @@ const ModalEditTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
         task: {
           description: data.description,
           dueDate: data.dueDate,
+          priority: data.priority,
           tags: (data.tags || []).map((tag: OptionItem) => tag.value),
         },
       });
@@ -138,6 +155,14 @@ const ModalEditTask: ForwardRefRenderFunction<ModalRefProps> = (_, ref) => {
             required
           />
           <Select
+            name="priority"
+            control={control}
+            options={priorityOptions}
+            label="Priorité"
+            placeholder="Choisir une priorité"
+            // required
+          />
+          <MultipleSelect
             name="tags"
             control={control}
             options={optionsTags || []}
