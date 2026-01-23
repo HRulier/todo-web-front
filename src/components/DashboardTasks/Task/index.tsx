@@ -12,6 +12,7 @@ import type { ModalEditTaskRefProps } from '~/components/ModalEditTask';
 interface TaskProps {
   _id: string;
   description: string;
+  priority: string | null;
   completed: boolean;
   dueDate: string;
   tags?: ITag[];
@@ -19,7 +20,7 @@ interface TaskProps {
 
 const debounceApiCall = 600;
 
-const Task = ({ _id, description, completed, dueDate, tags = [] }: TaskProps) => {
+const Task = ({ _id, description, completed, dueDate, priority, tags = [] }: TaskProps) => {
   const modalTaskRef = useRef<ModalEditTaskRefProps>(null);
   const { mutate: updateTask } = useUpdateTask();
   const name = `${_id}-completed`;
@@ -55,7 +56,9 @@ const Task = ({ _id, description, completed, dueDate, tags = [] }: TaskProps) =>
       <ModalEditTask ref={modalTaskRef} />
       <div
         className={styles.task}
-        onClick={() => modalTaskRef.current?.openTask({ _id, description, dueDate, tags })}
+        onClick={() =>
+          modalTaskRef.current?.openTask({ _id, description, dueDate, priority, tags })
+        }
         role="button"
       >
         <div>
@@ -73,7 +76,12 @@ const Task = ({ _id, description, completed, dueDate, tags = [] }: TaskProps) =>
             </div>
           )}
         </div>
-        <button onClick={() => modalTaskRef.current?.openTask({ _id, description, dueDate, tags })}>
+        <div className={`${styles.priority} ${priority ? styles[priority] : ''}`} />
+        <button
+          onClick={() =>
+            modalTaskRef.current?.openTask({ _id, description, dueDate, priority, tags })
+          }
+        >
           <IoIosSettings size={25} />
         </button>
       </div>
