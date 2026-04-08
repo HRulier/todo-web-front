@@ -4,7 +4,7 @@ A full-featured task management web application built with React 19 and TypeScri
 Tasks are organized in a **weekly calendar view**, filterable by tags, with complete
 authentication including OAuth (Google & Slack).
 
-> **Backend repository:** _link to your backend repo here_
+> **Backend repository:** (https://github.com/HRulier/todo-api)
 
 ## Features
 
