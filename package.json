@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "author": "HRulier",
+  "description": "A full-featured todo web application with weekly planning, tags, and OAuth authentication (Google & Slack)",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc -b && vite build",
