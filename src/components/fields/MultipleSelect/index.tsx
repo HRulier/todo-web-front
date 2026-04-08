@@ -1,6 +1,6 @@
-import { useMemo, useState, useRef, useCallback } from 'react';
+import React, { useMemo, useState, useRef, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
-import { useCombobox } from 'downshift';
+import { useCombobox, useMultipleSelection } from 'downshift';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa6';
 import { useController } from 'react-hook-form';
 import type { Control, FieldValues, Path, RegisterOptions } from 'react-hook-form';
@@ -26,13 +26,13 @@ interface SelectProps<TFieldValues extends FieldValues> {
   disabled?: boolean;
 }
 
-const Select = <TFieldValues extends FieldValues>({
+const MultipleSelect = <TFieldValues extends FieldValues>({
   name,
   control,
   label,
   options: initialOptions,
   createPrefix = 'Créer :',
-  placeholder = 'Sélectionnez une option...',
+  placeholder = 'Tapez pour rechercher ou créer...',
   required = false,
   rules,
   createOption,
@@ -58,19 +58,23 @@ const Select = <TFieldValues extends FieldValues>({
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Find selected option from current value
-  const selectedItem = useMemo(() => {
-    if (!field.value) return null;
-    return options.find(option => option.value === field.value) || null;
-  }, [field.value, options]);
+  // Multiple selection setup
+  const { getSelectedItemProps, getDropdownProps, removeSelectedItem, selectedItems } =
+    useMultipleSelection<OptionItem>({
+      selectedItems: field.value || [],
+      onSelectedItemsChange: ({ selectedItems: newSelectedItems }) => {
+        field.onChange(newSelectedItems || []);
+      },
+    });
 
-  // Filter options based on input
+  // Filter options based on input and selected items
   const filteredOptions = useMemo(() => {
     const normalizedInput = inputValue.toLowerCase().trim();
 
     let filtered = options.filter(item => {
+      const isSelected = selectedItems.some(selectedItem => selectedItem.value === item.value);
       const matchesInput = !normalizedInput || item.label.toLowerCase().includes(normalizedInput);
-      return matchesInput;
+      return !isSelected && matchesInput;
     });
 
     // Add create option if no matches and input is not empty
@@ -79,30 +83,27 @@ const Select = <TFieldValues extends FieldValues>({
     }
 
     return filtered;
-  }, [options, inputValue, createOption]);
+  }, [options, selectedItems, inputValue, createOption]);
 
   // Handle item selection
   const handleSelectedItemChange = useCallback(
     async (selectedItem: OptionItem | null) => {
-      if (!selectedItem) {
-        field.onChange('');
-        setInputValue('');
-        return;
-      }
+      if (!selectedItem) return;
 
-      let itemToSelect = selectedItem;
+      let itemToAdd = selectedItem;
 
       if (selectedItem.isNew && createOption) {
         try {
-          itemToSelect = await createOption(selectedItem.label);
-          setOptions(prev => [...prev, itemToSelect]);
+          itemToAdd = await createOption(selectedItem.label);
+          setOptions(prev => [...prev, itemToAdd]);
         } catch (error) {
           console.error('Error creating new option:', error);
           return;
         }
       }
 
-      field.onChange(itemToSelect.value);
+      const newSelectedItems = [...(field.value || []), itemToAdd];
+      field.onChange(newSelectedItems);
       setInputValue('');
     },
     [field, createOption]
@@ -122,7 +123,7 @@ const Select = <TFieldValues extends FieldValues>({
     items: filteredOptions,
     itemToString: (item: OptionItem | null) => item?.label || '',
     inputValue,
-    selectedItem,
+    selectedItem: null,
     onInputValueChange: ({ inputValue: newValue }) => {
       setInputValue(newValue || '');
     },
@@ -169,20 +170,35 @@ const Select = <TFieldValues extends FieldValues>({
 
   // Get Downshift input props
   const downshiftInputProps = getInputProps({
-    ref: mergeRefs(inputRef, field.ref),
+    ref: mergeRefs(inputRef, field.ref), // Merge ref with React Hook Form ref
     disabled,
   });
 
-  // Handle container click
-  const handleContainerClick = useCallback(() => {
-    if (!disabled && inputRef.current) {
-      inputRef.current.focus();
-      openMenu();
-    }
-  }, [disabled, openMenu]);
+  const dropdownProps = getDropdownProps({
+    preventKeyAction: isOpen,
+  });
 
-  // Display value in the input when closed
-  const displayValue = isOpen ? inputValue : selectedItem?.label || '';
+  // Handle container click
+  const handleContainerClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (dropdownProps.onClick) {
+        dropdownProps.onClick(e);
+      }
+      if (!disabled && inputRef.current) {
+        inputRef.current.focus();
+        openMenu();
+      }
+    },
+    [disabled, openMenu]
+  );
+
+  const handleRemoveItem = useCallback(
+    (e: React.MouseEvent, item: OptionItem) => {
+      e.stopPropagation();
+      removeSelectedItem(item);
+    },
+    [removeSelectedItem]
+  );
 
   return (
     <div className={styles.container}>
@@ -195,23 +211,50 @@ const Select = <TFieldValues extends FieldValues>({
 
       <div
         className={`
-          ${styles.inputWrapper}
-          ${fieldState.invalid ? styles.inputError : ''}
+          ${styles.inputWrapper} 
+          ${fieldState.invalid ? styles.inputError : ''} 
           ${disabled ? styles.disabled : ''}
         `}
         role="button"
         tabIndex={-1}
-        onClick={handleContainerClick}
+        {...dropdownProps}
+        onClick={handleContainerClick} // override onClick from Downshift (call it from directly from handleContainerClick)
       >
-        <div className={styles.selectedValue}>
+        <div className={styles.selectedItems}>
+          {selectedItems.map((selectedItem: OptionItem, index: number) => (
+            <span
+              key={selectedItem.value}
+              className={styles.selectedItem}
+              style={selectedItem.color ? { backgroundColor: selectedItem.color } : {}}
+              {...getSelectedItemProps({
+                selectedItem,
+                index,
+              })}
+            >
+              {selectedItem.label}
+              {!disabled && (
+                <button
+                  type="button"
+                  className={styles.removeButton}
+                  onClick={e => handleRemoveItem(e, selectedItem)}
+                  aria-label={`Remove ${selectedItem.label}`}
+                >
+                  &#10005;
+                </button>
+              )}
+            </span>
+          ))}
+
           <input
             {...downshiftInputProps}
-            className={styles.input}
-            placeholder={!selectedItem ? placeholder : ''}
-            value={displayValue}
+            className={`
+              ${styles.inputSearch} 
+              ${selectedItems.length === 0 ? styles.placeholder : ''}
+            `}
+            placeholder={selectedItems.length === 0 ? placeholder : ''}
+            value={inputValue}
             data-testid={`select-input-${name}`}
             disabled={disabled}
-            readOnly={!isOpen}
           />
         </div>
 
@@ -230,9 +273,8 @@ const Select = <TFieldValues extends FieldValues>({
           ? filteredOptions.map((item, index) => (
               <li
                 className={`
-                ${styles.menuItem}
-                ${highlightedIndex === index ? styles.highlighted : ''}
-                ${selectedItem?.value === item.value ? styles.selected : ''}
+                ${styles.menuItem} 
+                ${highlightedIndex === index ? styles.highlighted : ''} 
                 ${item.isNew ? styles.createOption : ''}
               `}
                 key={item.value}
@@ -258,4 +300,4 @@ const Select = <TFieldValues extends FieldValues>({
   );
 };
 
-export default Select;
+export default MultipleSelect;

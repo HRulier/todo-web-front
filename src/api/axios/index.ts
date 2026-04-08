@@ -70,7 +70,12 @@ AxiosWithInterceptors.interceptors.response.use(
         }
       } catch (refreshError) {
         processQueue(refreshError, null);
-        if (refreshError instanceof AxiosError && refreshError.response?.status === 403) {
+        console.log('refreshError', refreshError);
+
+        if (
+          refreshError instanceof AxiosError &&
+          (refreshError.response?.status === 403 || refreshError.response?.status === 400)
+        ) {
           localStorage.removeItem('token');
           // localStorage.removeItem('refreshToken');
           if (!window.location.href.includes('/signin')) {

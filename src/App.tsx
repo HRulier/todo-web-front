@@ -57,7 +57,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Routes />
         <ToastContainer position="bottom-right" stacked />
-        <ReactQueryDevtools />
+        {import.meta.env.DEV && <ReactQueryDevtools />}
       </QueryClientProvider>
     </>
   );
