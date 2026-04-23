@@ -1,4 +1,6 @@
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useCallback, useEffect, useLayoutEffect } from 'react';
+import { useSearchParams } from 'react-router';
+
 import { format } from 'date-fns';
 import { enUS, fr } from 'date-fns/locale';
 import { MdAdd } from 'react-icons/md';
@@ -25,7 +27,9 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
   const { mutateAsync: updateTask } = useUpdateTask();
 
   const modalEditTaskRef = useRef<ModalEditTaskRefProps>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
+  const isScrollingProgrammatically = useRef(false);
   const [draggedTask, setDraggedTask] = useState<ITask | null>(null);
   const [draggedFrom, setDraggedFrom] = useState<string | null>(null);
   const [dropIndicator, setDropIndicator] = useState<{
@@ -38,7 +42,6 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
     loading: false,
   });
   const dragCounter = useRef<{ [key: string]: number }>({});
-
   const groupedTasks = useMemo(() => {
     const grouped: GroupedTasks = {};
     daysOfWeek.forEach((date: Date) => {
@@ -64,6 +67,46 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
 
     return grouped;
   }, [tasks, daysOfWeek]);
+
+  useLayoutEffect(() => {
+    const dateParam = searchParams.get('date');
+
+    const targetDate = dateParam || format(new Date(), 'yyyy-MM-dd', { locale: fr });
+
+    const targetColumn = document.getElementById(targetDate);
+    const daysContainer = document.getElementById('daysContainer');
+
+    if (
+      !targetColumn?.offsetLeft ||
+      !daysContainer ||
+      (daysContainer && daysContainer.scrollWidth === daysContainer.clientWidth)
+    )
+      return;
+
+    isScrollingProgrammatically.current = true;
+    daysContainer.scrollLeft =
+      targetColumn.offsetLeft + targetColumn.clientWidth / 2 - daysContainer.clientWidth / 2;
+
+    setTimeout(() => {
+      isScrollingProgrammatically.current = false;
+    }, 100);
+  }, []);
+
+  useEffect(() => {
+    const daysContainer = document.getElementById('daysContainer');
+    if (!daysContainer) return;
+
+    const handleScrollEnd = (evt: any) => {
+      if (isScrollingProgrammatically.current || !evt.snapTargetInline?.id) return;
+      setSearchParams({ date: evt.snapTargetInline.id });
+    };
+
+    daysContainer.addEventListener('scrollsnapchange', handleScrollEnd);
+
+    return () => {
+      daysContainer.removeEventListener('scrollsnapchange', handleScrollEnd);
+    };
+  }, []);
 
   const getDropIndex = (e: React.DragEvent<HTMLDivElement>, tasksInDay: ITask[]) => {
     const container = e.currentTarget;
@@ -202,9 +245,13 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
   return (
     <>
       <ModalEditTask ref={modalEditTaskRef} />
-      <div className={styles.weekGrid} dir="ltr">
+      <div id="daysContainer" className={styles.weekGrid} dir="ltr">
         {DAYS_ORDER.map(day => (
-          <div className={styles.dayColumn} key={day}>
+          <div
+            id={format(groupedTasks[day].date, 'yyyy-MM-dd', { locale: fr })}
+            className={styles.dayColumn}
+            key={day}
+          >
             <h4>
               {groupedTasks[day] ? format(groupedTasks[day].date, 'EEE dd', { locale: fr }) : day}
             </h4>
@@ -241,6 +288,7 @@ const DashboardTasks = ({ tasks, daysOfWeek }: { tasks: ITask[]; daysOfWeek: Dat
                         key={task._id}
                         _id={task._id}
                         description={task.description}
+                        priority={task.priority}
                         completed={task.completed}
                         tags={task.tags}
                         dueDate={task.dueDate}

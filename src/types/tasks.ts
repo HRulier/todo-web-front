@@ -10,6 +10,7 @@ export interface ITask {
   updatedAt?: Date;
   user: IUser;
   position: number;
+  priority: string | null;
   tags: ITag[];
 }
 
@@ -22,6 +23,7 @@ export interface QueryParamsGetTasks {
 export interface CreateTaskPayload {
   description: string;
   dueDate: string;
+  priority?: string | null;
   tags: string[];
 }
 
@@ -30,5 +32,6 @@ export interface UpdateTaskPayload {
   dueDate?: string;
   completed?: boolean;
   position?: number;
+  priority?: string;
   tags?: string[];
 }

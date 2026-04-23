@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
 import { useUserProfile } from '~/hooks/api/auth';
 
-const AuthGoogleSuccess = () => {
+const AuthSuccess = () => {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const token = params.get('token');
@@ -52,4 +52,4 @@ const AuthGoogleSuccess = () => {
   );
 };
 
-export default AuthGoogleSuccess;
+export default AuthSuccess;

@@ -1,67 +1,90 @@
-# React + TypeScript + Vite
+# Todo App — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-featured task management web application built with React 19 and TypeScript.
+Tasks are organized in a **weekly calendar view**, filterable by tags, with complete
+authentication including OAuth (Google & Slack).
 
-Currently, two official plugins are available:
+> **Backend repository:** (https://github.com/HRulier/todo-api)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Weekly dashboard — navigate week by week, tasks displayed by day
+- Create, edit, and delete tasks with due dates and tags
+- Custom tag system for task categorization
+- Full authentication flow: sign up, sign in, email verification
+- Password management: forgot / reset / change password
+- OAuth login via Google and Slack
+- JWT authentication with automatic token refresh
+- User profile management and account deletion
+- Responsive UI with animations (Motion)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+| Category         | Technology                  |
+| ---------------- | --------------------------- |
+| Framework        | React 19, TypeScript        |
+| Build tool       | Vite 6                      |
+| Routing          | React Router 7              |
+| Data fetching    | TanStack Query v5           |
+| HTTP client      | Axios                       |
+| Forms            | React Hook Form             |
+| Styling          | SCSS Modules                |
+| Animations       | Motion                      |
+| Notifications    | React Toastify              |
+| Date utilities   | date-fns                    |
+| Containerization | Docker (multi-stage), Nginx |
+| CI/CD            | GitHub Actions              |
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js >= 20
+- A running instance of the backend API
+
+### Environment variables
+
+Copy `.env.example` and fill in the required values:
+
+```bash
+cp .env.example .env
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+| Variable       | Description                 |
+| -------------- | --------------------------- |
+| `VITE_API_URL` | Base URL of the backend API |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+## Run with npm
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
+```bash
+npm install
+npm run dev        # development server → http://localhost:5173
+npm run build      # production build (output: /dist)
 ```
 
-# Build and run the API container with host networking
+## Docker
 
+### Development
+
+```bash
 docker build -t todo-client --target development .
 
-docker run --name todo-client --network host \
- -v .:/app \
- -v /app/node_modules \
- todo-client
+docker run --name todo-client -p 5173:5173 \
+  --env-file .env.local \
+  -v .:/app \
+  -v /app/node_modules \
+  todo-client
+```
 
-docker start todo-client
-docker stop todo-client
-docker logs -f todo-client
+### Production
+
+```bash
+docker build -t todo-client --target production .
+
+docker run --name todo-client -p 5173:5173 \
+  --env-file .env.production \
+  todo-client
+
+```
+
+The app is available at http://localhost:5173.

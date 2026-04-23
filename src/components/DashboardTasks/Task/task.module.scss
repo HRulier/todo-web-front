@@ -1,12 +1,14 @@
 @use '@styles/variables.scss' as *;
 
 .task {
+  position: relative;
   display: flex;
   align-items: flex-start;
   padding: $spacing-2;
   border: solid 1px $background-primary;
   border-radius: $border-radius;
   cursor: grab;
+  overflow: hidden;
 
   > div:first-child {
     margin-right: $spacing-2;
@@ -39,6 +41,24 @@
 
   &:hover button {
     visibility: visible;
+  }
+
+  .priority {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    cursor: none;
+    &.low {
+      background-color: $secondary-color;
+    }
+    &.medium {
+      background-color: $warning-color;
+    }
+    &.high {
+      background-color: $error-color;
+    }
   }
 
   button {

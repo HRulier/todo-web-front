@@ -10,6 +10,8 @@ import InputPassword from '~/components/fields/InputPassword';
 import Button from '~/components/Button';
 import SendVerificationButton from '~/components/SendVerificationButton';
 
+import type { IUser } from '~/types/users';
+
 const SignUp = () => {
   const { control, handleSubmit, watch } = useForm({
     defaultValues: {
@@ -30,7 +32,11 @@ const SignUp = () => {
 
   const handleSignUp = async (data: FieldValues) => {
     try {
-      await signUp(data as { email: string; password: string });
+      const tzid = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      await signUp({
+        ...data,
+        timezone: tzid,
+      } as Partial<IUser> & { password: string });
     } catch (err) {
       console.log(err);
     }
