@@ -35,25 +35,9 @@ La vue principale organise les tâches par semaine, avec navigation entre les se
 
 ## Fonctionnalités
 
-### Authentification complète
-- Inscription et connexion par email/mot de passe
-- Connexion via **Google OAuth**
-- Vérification d'email obligatoire à l'inscription
-- Renvoi du mail de vérification
-- Mot de passe oublié et réinitialisation par lien sécurisé
-
-### Gestion des tokens JWT
-La couche HTTP est construite autour de deux instances Axios distinctes. L'instance principale embarque un interceptor qui gère silencieusement le renouvellement du token d'accès à l'expiration (refresh token via cookie HTTP-only). Un mécanisme de file d'attente évite les appels concurrents au refresh : toutes les requêtes en erreur 401 sont mises en attente le temps que le nouveau token soit obtenu, puis rejouées automatiquement.
-
-### Tâches
-- Vue hebdomadaire avec navigation semaine par semaine
-- Création, modification et suppression de tâches
-- Assignation de tags et de dates d'échéance
-
-### Profil utilisateur
-- Mise à jour des informations personnelles
-- Changement de mot de passe
-- Suppression du compte
+- **Authentification** — email/mot de passe, Google OAuth et Slack, vérification d'email, mot de passe oublié et réinitialisation
+- **Tâches** — vue hebdomadaire, navigation par semaine, CRUD complet avec tags et dates d'échéance
+- **Profil** — mise à jour des informations, changement de mot de passe, suppression du compte
 
 ---
 
