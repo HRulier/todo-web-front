@@ -14,7 +14,7 @@ CMD ["npm", "run", "dev"]
 
 # Builder
 FROM base AS builder
-RUN npm ci
+RUN npm ci --include=dev
 COPY . .
 RUN npm run build
 
