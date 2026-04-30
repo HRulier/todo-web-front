@@ -19,7 +19,7 @@ COPY . .
 RUN npm run build
 
 # Production
-FROM nginx:alpine AS production
+FROM node:20-alpine AS production
 
 RUN addgroup --system --gid 1001 nginx-group
 RUN adduser --system --uid 1001 --ingroup nginx-group nginx-user
