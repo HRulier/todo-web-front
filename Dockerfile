@@ -1,5 +1,5 @@
 # Base
-FROM node:lts-alpine AS base
+FROM node:20-alpine AS base
 
 WORKDIR /app
 COPY package*.json ./
@@ -14,7 +14,7 @@ CMD ["npm", "run", "dev"]
 
 # Builder
 FROM base AS builder
-RUN npm ci
+RUN npm ci --include=dev
 COPY . .
 RUN npm run build
 
