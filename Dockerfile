@@ -14,7 +14,7 @@ CMD ["npm", "run", "dev"]
 
 # Builder
 FROM base AS builder
-ARG VITE_API_URL=https://api.todo-app.loopness.fr
+ARG VITE_API_URL=https://api.todo-app.loopness.fr/api
 ENV VITE_API_URL=$VITE_API_URL
 RUN npm ci --include=dev
 COPY . .
